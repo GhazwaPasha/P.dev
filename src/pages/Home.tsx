@@ -8,6 +8,7 @@ import { frostedGlass } from '../components/glass/glassPresets';
 import LogoBadges from '../components/hero/LogoBadges';
 import styles from '../components/hero/IdentityCard.module.css';
 import { BG_VIDEO_PLAYBACK_RATE } from '../components/layout/bgVideo';
+import { withBase } from '../lib/assetPath';
 
 // Module-level (stable reference) so LiquidGlassRoot's effect doesn't tear
 // down and reinitialize its WebGL context on every Home render. cornerRadius
@@ -63,11 +64,11 @@ export default function Home() {
             muted
             playsInline
             preload="auto"
-            poster="/images/bg.jpg"
+            poster={withBase('/images/bg.jpg')}
             aria-hidden="true"
             style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           >
-            <source src="/videos/bg.mp4" type="video/mp4" />
+            <source src={withBase('/videos/bg.mp4')} type="video/mp4" />
           </video>
           <div
             className={styles.wrap}

@@ -1,6 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import { withBase } from '../../lib/assetPath';
 
 let cachedLoader: GLTFLoader | null = null;
 
@@ -13,7 +14,7 @@ let cachedLoader: GLTFLoader | null = null;
 export function getGLTFLoader(): GLTFLoader {
   if (cachedLoader) return cachedLoader;
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath('/draco/');
+  dracoLoader.setDecoderPath(withBase('/draco/'));
   const loader = new GLTFLoader();
   loader.setDRACOLoader(dracoLoader);
   loader.setMeshoptDecoder(MeshoptDecoder);

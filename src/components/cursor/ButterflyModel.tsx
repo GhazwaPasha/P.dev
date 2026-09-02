@@ -1,8 +1,9 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
 import * as THREE from 'three';
+import { withBase } from '../../lib/assetPath';
 
-const MODEL_URL = '/models/butterfly.glb';
+const MODEL_URL = withBase('/models/butterfly.glb');
 
 /**
  * World-unit size the butterfly is normalized to fit within, so the cursor's

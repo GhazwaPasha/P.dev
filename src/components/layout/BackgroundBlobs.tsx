@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { BG_VIDEO_PLAYBACK_RATE } from './bgVideo';
+import { withBase } from '../../lib/assetPath';
 
 /** Fixed, full-viewport page background — a looping ambient video behind every page.
  *  Falls back to the static photo (as poster, and outright in place of the video)
@@ -37,7 +38,7 @@ export default function BackgroundBlobs() {
         muted
         playsInline
         preload="auto"
-        poster="/images/bg.jpg"
+        poster={withBase('/images/bg.jpg')}
         style={{
           position: 'absolute',
           inset: 0,
@@ -47,7 +48,7 @@ export default function BackgroundBlobs() {
           objectPosition: 'center',
         }}
       >
-        <source src="/videos/bg.mp4" type="video/mp4" />
+        <source src={withBase('/videos/bg.mp4')} type="video/mp4" />
       </video>
     </div>
   );

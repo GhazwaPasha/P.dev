@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Canvas } from '@react-three/fiber';
 import AvatarModel, { type PointerPosition } from './AvatarModel';
 import { useAvatarLoader } from './useAvatarLoader';
+import { withBase } from '../../lib/assetPath';
 import styles from './AvatarHero.module.css';
 
 /**
@@ -26,7 +27,7 @@ export default function AvatarHero() {
   if (status === 'fallback') {
     return (
       <div className={styles.fallbackFrame}>
-        <img src="/fallback/hero-fallback.png" alt="Pivak E Safa" className={styles.fallbackImage} />
+        <img src={withBase('/fallback/hero-fallback.png')} alt="Pivak E Safa" className={styles.fallbackImage} />
       </div>
     );
   }

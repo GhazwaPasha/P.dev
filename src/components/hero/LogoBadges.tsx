@@ -4,6 +4,7 @@ import LiquidGlassRoot from '../glass/LiquidGlassRoot';
 import GlassBackdropVideo from '../glass/GlassBackdropVideo';
 import { frostedGlass } from '../glass/glassPresets';
 import { projects } from '../../content/projects';
+import { withBase } from '../../lib/assetPath';
 import styles from './LogoBadges.module.css';
 
 interface LogoBadge {
@@ -15,8 +16,8 @@ interface LogoBadge {
 }
 
 const logos: LogoBadge[] = [
-  { name: 'LexCheck', href: 'https://lexcheck.com', src: '/logos/lexcheck.svg', fallback: 'LX' },
-  { name: 'Cohere', href: 'https://cohere.live', src: '/logos/cohere.svg', fallback: 'CH' },
+  { name: 'LexCheck', href: 'https://lexcheck.com', src: withBase('/logos/lexcheck.svg'), fallback: 'LX' },
+  { name: 'Cohere', href: 'https://cohere.live', src: withBase('/logos/cohere.svg'), fallback: 'CH' },
 ];
 
 /** Tech stack per logo, pulled straight from the Projects content so it never drifts out of sync. */

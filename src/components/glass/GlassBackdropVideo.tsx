@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { BG_VIDEO_PLAYBACK_RATE } from '../layout/bgVideo';
+import { withBase } from '../../lib/assetPath';
 
 interface GlassBackdropVideoProps {
   src?: string;
@@ -32,8 +33,8 @@ interface GlassBackdropVideoProps {
  * position:fixed" bug the old photo backdrop's comments already called out.
  */
 export default function GlassBackdropVideo({
-  src = '/videos/bg.mp4',
-  poster = '/images/bg.jpg',
+  src = withBase('/videos/bg.mp4'),
+  poster = withBase('/images/bg.jpg'),
 }: GlassBackdropVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
 

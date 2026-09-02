@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import type { GLTF } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { getGLTFLoader } from './loaders';
+import { withBase } from '../../lib/assetPath';
 
 export type AvatarLoadStatus = 'loading' | 'loaded' | 'fallback';
 
-const MODEL_URL = '/models/avatar.glb';
+const MODEL_URL = withBase('/models/avatar.glb');
 const WATCHDOG_MS = 45000;
 
 /**
