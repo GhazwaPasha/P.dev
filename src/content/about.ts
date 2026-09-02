@@ -1,10 +1,4 @@
-import type {
-  Award,
-  Certification,
-  EducationEntry,
-  ExperienceEntry,
-  LanguageEntry,
-} from '../types/content';
+import type { CapabilityPillar, Highlight, Story } from '../types/content';
 
 export const profile = {
   name: 'Pivak E Safa',
@@ -15,101 +9,87 @@ export const profile = {
   location: 'Pakistan',
 };
 
-export const summary =
-  'I design and build complete products — responsive front ends, APIs, and the ' +
-  'databases behind them. Comfortable across the stack, from Angular and React ' +
-  'on the client to .NET Core and Node on the server, with production experience ' +
-  'taking a product from concept to a multi-million dollar acquisition.';
+// First-person, point-of-view statement rather than a resume objective —
+// what I care about building, not a restated list of capabilities (those
+// live in `pillars` below).
+export const intro =
+  "I care about the whole product, not just my corner of the stack — a good " +
+  'idea only counts once someone can actually use it. That usually means moving ' +
+  'between a Figma file, an API, and a database in the same afternoon, and ' +
+  "keeping the thing usable and fast the whole way through. I've spent the last " +
+  'few years doing exactly that, most of it on one product that grew from a ' +
+  'concept into a company an acquirer wanted.';
 
-export const skills: string[] = [
-  'Angular',
-  'React JS',
-  'React Native',
-  'Redux',
-  'Next.js',
-  'Ant Design',
-  'MUI',
-  'Material UI',
-  'JavaScript',
-  'TypeScript',
-  'HTML',
-  'CSS',
-  '.NET',
-  '.NET Core',
-  'ASP.NET',
-  'ASP.NET Core',
-  'C#',
-  'Node JS',
-  'MySQL',
-  'MongoDB',
-  'AWS',
-  'Firebase',
-  'GraphQL',
-  'Azure Cloud',
-  'Python',
-  'Git',
-  'GitHub',
-  'GitLab',
-  'Jira',
-  'Bitbucket',
-  'Postman',
-  'HeidiSQL',
-  'Figma',
-  'Redmine',
-  'Cursor AI',
-  'GitHub Copilot',
-];
-
-export const experience: ExperienceEntry[] = [
+export const pillars: CapabilityPillar[] = [
   {
-    company: 'Rolustech',
-    location: 'Lahore, Pakistan (Remote)',
-    title: 'Full Stack Developer',
-    period: '06/2019 – Present',
-    bullets: [
-      'Managed 6+ full-stack projects simultaneously using Agile development methodologies.',
-      'Frontend: Angular, React JS, React Native, Redux, Next.js, TypeScript, JavaScript, CSS, HTML.',
-      'Backend: C#, ASP.NET, Entity Framework, Node JS, GraphQL, MySQL, MongoDB, Firebase, AWS, Azure DevOps.',
-      'Implemented and maintained scalable design systems (Material UI, Ant Design, custom UI kits) for consistent, accessible UX.',
-      'Worked closely with designers and PMs to build interactive, user-friendly interfaces focused on usability, accessibility, and performance.',
-      'Introduced modern practices and architectures such as Microservices and Clean Architecture.',
-      'Collaborated with product managers, developers, and business managers across the USA, Canada, and Australia to prioritize roadmap and requirements.',
-      'Followed Scrum-based development with two-week sprints alongside Kanban to maintain quality and on-time delivery.',
-      'Owned technical process end to end — development, design, architecture, and code review.',
-      'Managed codebases totaling 200,000+ lines of code across 4 platforms.',
-      'Core team member developing a product from initial concept to a multi-million dollar solution, later acquired by a prominent Silicon Valley tech leader.',
-      'Leveraged AI tools like Cursor AI and GitHub Copilot to cut development cost and boost productivity by 40%+.',
-    ],
+    title: 'Product engineering, end to end',
+    description:
+      'Full-stack builds spanning the client, the API, and the database behind it — not just the part closest to the design file.',
+    tags: ['React', 'Next.js', 'Angular', 'React Native', 'TypeScript'],
+  },
+  {
+    title: 'Backend & cloud',
+    description:
+      'Services and data layers built to hold up under real usage — REST and GraphQL APIs on .NET and Node, backed by SQL and NoSQL stores on AWS and Azure.',
+    tags: ['.NET Core', 'Node.js', 'C#', 'GraphQL', 'MySQL', 'MongoDB', 'AWS', 'Azure'],
+  },
+  {
+    title: 'Design systems & UX',
+    description:
+      'Interfaces built from a shared component language rather than one-off screens — consistent, and accessible by default.',
+    tags: ['Figma', 'Material UI', 'Ant Design', 'Accessibility'],
+  },
+  {
+    title: 'Workflow & tooling',
+    description:
+      'Agile delivery across distributed teams, with modern AI tooling folded into the day-to-day to move faster without cutting corners.',
+    tags: ['Git', 'Jira', 'Cursor AI', 'GitHub Copilot'],
   },
 ];
 
-export const education: EducationEntry[] = [
+export const story: Story = {
+  role: 'Full Stack Developer',
+  company: 'Rolustech',
+  location: 'Lahore, Pakistan (Remote)',
+  period: '06/2019 – Present',
+  body:
+    "I've been a core team member on a product I helped take from an initial " +
+    'concept to a multi-million dollar business, later acquired by a prominent ' +
+    'Silicon Valley tech leader — working across Angular, React, and React ' +
+    'Native on the front end and .NET, Node, and GraphQL behind it, with a design ' +
+    'system holding the UI together across four platforms. Along the way I worked ' +
+    'directly with product managers, designers, and engineers across the US, ' +
+    'Canada, and Australia, and helped introduce practices like microservices ' +
+    'and clean architecture as the codebase grew.',
+  stats: [
+    { value: '6+', label: 'projects managed at once' },
+    { value: '200k+', label: 'lines of code owned' },
+    { value: '40%+', label: 'faster delivery, AI-assisted' },
+  ],
+};
+
+// Strongest few facts worth a portfolio visitor's attention — academic,
+// leadership, and credentialing detail condensed from what used to be three
+// separate resume sections (Education, Awards, Certifications).
+export const highlights: Highlight[] = [
   {
-    school: 'National University of Computer and Emerging Sciences',
-    location: 'Pakistan',
-    degree: 'Bachelor of Science, Computer Science',
-    period: '08/2015 – 06/2019',
-    notes: [
-      'Graduated Magna Cum Laude — 3.76 / 4.00.',
-      'Founded and led the Women in Engineering society; ran seminars and workshops supporting women in engineering.',
-    ],
+    title: 'B.S. Computer Science, Magna Cum Laude',
+    description:
+      'National University of Computer and Emerging Sciences — 3.76/4.00, Gold Medalist for the highest CGPA in the graduating class.',
+  },
+  {
+    title: 'Founder, Women in Engineering',
+    description:
+      'Founded and led the society at NUCES, running seminars and workshops supporting women in engineering.',
+  },
+  {
+    title: 'Finalist, Adobe Women in Tech',
+    description: 'Reached the final round of the Adobe Women in Tech Scholarship.',
+  },
+  {
+    title: 'Certified across the stack',
+    description: 'React (Udemy), Secure Full-Stack MEAN (EC-Council), and UX Design foundations (Google).',
   },
 ];
 
-export const certifications: Certification[] = [
-  { name: 'React — The Complete Guide', issuer: 'Udemy' },
-  { name: 'Secure Full Stack MEAN Developer', issuer: 'EC-Council' },
-  { name: 'Foundations of User Experience (UX) Design', issuer: 'Google' },
-];
-
-export const awards: Award[] = [
-  { title: 'Gold Medalist', description: 'Highest CGPA holder in bachelor degree at FAST NUCES.' },
-  { title: 'Finalist, Adobe WiT', description: 'Reached the final round of the Adobe Women in Tech Scholarship.' },
-  { title: "Dean's List", description: "Appeared on the Dean's List of honor multiple times during the bachelor degree." },
-];
-
-export const languages: LanguageEntry[] = [
-  { name: 'English', level: 'Proficient' },
-  { name: 'Urdu', level: 'Native' },
-  { name: 'Punjabi', level: 'Native' },
-];
+export const languages: string[] = ['English', 'Urdu', 'Punjabi'];

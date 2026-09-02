@@ -6,9 +6,11 @@
    to carry the flex/transform layout. */
 .wrap {
   position: absolute;
-  top: 50%;
+  /* `top` and `transform` are set inline from LogoBadges.tsx instead of
+     here — see the comment there (next to ROOT_WIDTH/ROOT_HEIGHT) for why
+     the plain `top: 50%; transform: translateY(-50%)` trick doesn't work
+     once this root is padded past its own visual content. */
   left: 108px;
-  transform: translateY(-50%);
   z-index: 1;
 }
 
@@ -42,6 +44,7 @@
   font-size: 13px;
   font-weight: 700;
   color: var(--color-subtle);
+  text-shadow: var(--glass-text-shadow);
   letter-spacing: 0.02em;
 }
 
@@ -70,7 +73,13 @@
   font-size: 8px;
   font-weight: 700;
   line-height: 1.15;
-  color: var(--color-label);
+  /* --color-body, not --color-label — unlike the pill/chip rows in
+     GlassPill.module.css, this chip has no CSS background of its own (see
+     the comment above: real glass, no plain-CSS backing), so it's on the
+     naked shader panel like --color-heading/--color-body, not on a
+     guaranteed-light pill like --color-label is. */
+  color: var(--color-body);
+  text-shadow: var(--glass-text-shadow);
 }
 
 .chip.revealed {

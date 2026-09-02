@@ -2,7 +2,7 @@ import { Fragment, useState, type CSSProperties } from 'react';
 import type { GlassConfig } from '@ybouane/liquidglass';
 import LiquidGlassRoot from '../glass/LiquidGlassRoot';
 import GlassBackdropVideo from '../glass/GlassBackdropVideo';
-import { regularGlass } from '../glass/glassPresets';
+import { frostedGlass } from '../glass/glassPresets';
 import { projects } from '../../content/projects';
 import styles from './LogoBadges.module.css';
 
@@ -55,9 +55,28 @@ const BADGE_GAP = 40;
  * flex + transform.
  */
 const GROUP_OFFSETS: Array<{ top: number; left: number }> = [
-  { top: 0, left: -48 }, // LexCheck — first
+  { top: 0, left: 96 }, // LexCheck — first
   { top: BADGE_SIZE + BADGE_GAP, left: 56 }, // Cohere — last
 ];
+
+// LiquidGlass measures and centers panels off this root's own
+// getBoundingClientRect() — but every child here is `position: absolute`
+// (see GROUP_OFFSETS above), so with no size of its own passed in, the root
+// has zero intrinsic width/height (nothing in normal flow to size it).
+// CSS doesn't mind that — it's just a positioning anchor — but the shader
+// library does: with a zero-size (or too-small) root, whichever tech chips
+// land farthest from their badge along the reveal arc permanently rendered
+// as flat white circles instead of real glass. Sizing the root to just the
+// badges' own footprint (184px tall) wasn't enough on its own — confirmed
+// live: chips still whited out, because the reveal arc reaches well past
+// that footprint (ARC_RADIUS plus a chip's own half-size and padding, ~124px
+// beyond a badge's center) and the library apparently needs the root to
+// actually cover the content it's asked to render, not just be "non-zero".
+// ROOT_WIDTH/HEIGHT below pad generously past that reach; only fixed once
+// they did.
+const CONTENT_WIDTH =
+  Math.max(...GROUP_OFFSETS.map((o) => o.left)) + BADGE_SIZE - Math.min(...GROUP_OFFSETS.map((o) => o.left));
+const CONTENT_HEIGHT = Math.max(...GROUP_OFFSETS.map((o) => o.top)) + BADGE_SIZE;
 
 // cornerRadius large enough to always clamp to whichever glass element it's
 // applied to's own half-height (GlassRenderer.ts's shader does
@@ -75,7 +94,7 @@ const GROUP_OFFSETS: Array<{ top: number; left: number }> = [
 // smaller still (40px, half-height 20px) and get their own, shallower
 // zRadius via `data-config` below rather than sharing this value.
 const logoGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = {
-  ...regularGlass,
+  ...frostedGlass,
   cornerRadius: 999,
   zRadius: 14,
 };
@@ -97,6 +116,23 @@ function arcOffset(i: number, n: number) {
   const y = -ARC_RADIUS * Math.sin(angleRad);
   return { x, y };
 }
+
+// LiquidGlass measures/centers panels off this root's own
+// getBoundingClientRect(), and needs that box to actually cover the content
+// it's asked to render — not just be non-zero. Sizing the root to only the
+// badges' own footprint (CONTENT_WIDTH/HEIGHT above) still left whichever
+// tech chips land farthest from their badge along the reveal arc permanently
+// white instead of real glass (confirmed live). ARC_REACH_PAD is how far a
+// revealed chip's own padded box can reach past its badge's center: the
+// arc's radius, plus the chip's half-size, plus the per-glass-element
+// SHADOW_PAD the library adds around every panel (40px: 20px chip half-size
+// + 20px shadow pad — see the liquidglass source, SHADOW_PAD). Padding the
+// root by this on every side (rather than baking it into CONTENT_WIDTH/
+// HEIGHT directly) keeps the padding symmetric around the group's own
+// footprint, so it doesn't itself shift where that footprint is centered.
+const ARC_REACH_PAD = ARC_RADIUS + 40;
+const ROOT_WIDTH = CONTENT_WIDTH + ARC_REACH_PAD * 2;
+const ROOT_HEIGHT = CONTENT_HEIGHT + ARC_REACH_PAD * 2;
 
 /**
  * Both badges and their whole tech-stack fans share ONE LiquidGlassRoot —
@@ -128,7 +164,20 @@ export default function LogoBadges() {
     <LiquidGlassRoot
       className={styles.wrap}
       defaults={logoGlassDefaults}
-      style={{ pointerEvents: 'none' }}
+      style={{
+        pointerEvents: 'none',
+        width: ROOT_WIDTH,
+        height: ROOT_HEIGHT,
+        // Overrides .wrap's `top: 50%; transform: translateY(-50%)` — that
+        // trick centers by the element's *own* height, which would now
+        // center the padded ROOT_HEIGHT box (see ARC_REACH_PAD above)
+        // instead of the group's real CONTENT_HEIGHT, visibly shifting the
+        // badges. This computes the same "centered" position directly from
+        // CONTENT_HEIGHT so the padding added for the library's sake stays
+        // invisible to layout.
+        top: `calc(50% - ${CONTENT_HEIGHT / 2}px)`,
+        transform: 'none',
+      }}
     >
       <GlassBackdropVideo />
       {logos.map((logo, gi) => {

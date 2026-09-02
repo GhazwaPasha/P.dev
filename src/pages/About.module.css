@@ -1,23 +1,23 @@
-/* Interactive variant of the inline `pillTag` style, for pills that are actual links.
-   Both current uses (LinkedIn, mailto Email) leave the site, so this uses the
+/* Interactive variant of GlassPill.module.css's shared `.pill` class (see
+   LiquidGlassPillRow), for pills that are actual links — composed alongside
+   it rather than replacing it, so the base glass background/border still
+   apply and only the interactive states below need to live here. Both
+   current uses (LinkedIn, mailto Email) leave the site, so this uses the
    secondary/indigo accent — see tokens.css: blue stays reserved for
    in-site navigation and focus. */
 .pillLink {
-  display: inline-flex;
-  align-items: center;
-  padding: 10px 18px;
-  border-radius: 999px;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-label);
-  background: var(--glass-pill-bg);
-  border: 1px solid var(--glass-pill-border);
-  transition: color 200ms ease, background 200ms ease, border-color 200ms ease, transform 150ms ease;
+  transition: color 200ms ease, border-color 200ms ease, transform 150ms ease;
 }
 
 .pillLink:hover {
-  color: var(--color-accent-secondary);
-  border-color: var(--color-accent-secondary);
+  /* --color-accent-secondary-onglass, not the plain --color-accent-secondary
+     other pill-hover/focus states on this page use elsewhere — this pill has
+     no solid CSS backing of its own (see GlassPill.module.css), just the
+     naked WebGL panel, so its text needs the same on-glass light variant
+     --color-heading/--color-label etc. use, not the mid-tone one tuned for
+     a solid background. */
+  color: var(--color-accent-secondary-onglass);
+  border-color: var(--color-accent-secondary-onglass);
 }
 
 .pillLink:active {
@@ -25,6 +25,6 @@
 }
 
 .pillLink:focus-visible {
-  outline: 2px solid var(--color-accent-secondary);
+  outline: 2px solid var(--color-accent-secondary-onglass);
   outline-offset: 2px;
 }

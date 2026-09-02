@@ -2,7 +2,7 @@ import type { GlassConfig } from '@ybouane/liquidglass';
 import { NavLink, useLocation } from 'react-router-dom';
 import LiquidGlassRoot from '../glass/LiquidGlassRoot';
 import GlassBackdropVideo from '../glass/GlassBackdropVideo';
-import { regularGlass } from '../glass/glassPresets';
+import { frostedGlass } from '../glass/glassPresets';
 import styles from './NavPill.module.css';
 
 interface NavItem {
@@ -53,7 +53,7 @@ const items: NavItem[] = [
 // clamps against its *own* box, so one config makes the pill a capsule and
 // the indicator a circle without needing a per-element data-config override.
 //
-// zRadius (bevel depth) is NOT left at regularGlass's inherited 40px
+// zRadius (bevel depth) is NOT left at frostedGlass's inherited 40px
 // default here — that number reads fine on the identity card (a ~210px-tall
 // panel, so a 40px bevel only eats the rim and leaves a large flat center),
 // but this pill is only ~54px tall. A bevel deeper than half an element's
@@ -64,7 +64,7 @@ const items: NavItem[] = [
 // though every other shader parameter is identical. 12px keeps roughly the
 // identity card's own bevel-to-half-height ratio (~0.38) at this size.
 const navGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = {
-  ...regularGlass,
+  ...frostedGlass,
   cornerRadius: 999,
   zRadius: 12,
 };

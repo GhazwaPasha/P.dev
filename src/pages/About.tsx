@@ -1,46 +1,43 @@
 import type { CSSProperties, ReactNode } from 'react';
+import { Link } from 'react-router-dom';
 import type { GlassConfig } from '@ybouane/liquidglass';
 import PageShell from '../components/layout/PageShell';
 import LiquidGlassSurface from '../components/glass/LiquidGlassSurface';
-import { regularGlass } from '../components/glass/glassPresets';
+import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
+import { frostedGlass } from '../components/glass/glassPresets';
 import pillStyles from './About.module.css';
-import {
-  profile,
-  summary,
-  skills,
-  experience,
-  education,
-  certifications,
-  awards,
-  languages,
-} from '../content/about';
-
-const pillTag: CSSProperties = {
-  padding: '10px 18px',
-  borderRadius: 999,
-  fontSize: 'var(--text-sm)',
-  fontWeight: 600,
-  color: 'var(--color-label)',
-  background: 'var(--glass-pill-bg)',
-  border: '1px solid var(--glass-pill-border)',
-};
+import { profile, intro, pillars, story, highlights, languages } from '../content/about';
 
 // cornerRadius 32 matches GlassCard's own default radius, which every card
 // on this page used to render at (none passed a `radius` override). Doubles
 // as this page's CSS border-radius too — see LiquidGlassSurface.
-const aboutGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = { ...regularGlass, cornerRadius: 32 };
+const aboutGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = { ...frostedGlass, cornerRadius: 32 };
 
 /**
  * One card = one LiquidGlassSurface, matching Home's identity-card shape.
- * `style` (when passed) lands on the *root*, not the card itself — used by
- * the Education/Awards pair below to size themselves via flex without
- * affecting the card's own fixed 40px padding.
  */
 function GlassPanel({ style, children }: { style?: CSSProperties; children: ReactNode }) {
   return (
     <LiquidGlassSurface defaults={aboutGlassDefaults} rootStyle={style} style={{ padding: 40 }}>
       {children}
     </LiquidGlassSurface>
+  );
+}
+
+function SectionHeading({ children }: { children: ReactNode }) {
+  return (
+    <h2
+      style={{
+        margin: '0 0 20px',
+        fontSize: 'var(--text-xl)',
+        lineHeight: 'var(--leading-snug)',
+        fontWeight: 700,
+        color: 'var(--color-heading)',
+        textShadow: 'var(--glass-text-shadow)',
+      }}
+    >
+      {children}
+    </h2>
   );
 }
 
@@ -59,6 +56,7 @@ export default function About() {
           gap: 28,
         }}
       >
+        {/* Intro — who I am, in my own words, not a resume objective line. */}
         <GlassPanel>
           <div style={{ display: 'flex', gap: 36, alignItems: 'center', flexWrap: 'wrap' }}>
             <div
@@ -89,6 +87,7 @@ export default function About() {
                   letterSpacing: 'var(--tracking-tight)',
                   fontWeight: 800,
                   color: 'var(--color-heading)',
+                  textShadow: 'var(--glass-text-shadow)',
                 }}
               >
                 {profile.name}
@@ -100,6 +99,7 @@ export default function About() {
                   lineHeight: 'var(--leading-normal)',
                   fontWeight: 600,
                   color: 'var(--color-subtle)',
+                  textShadow: 'var(--glass-text-shadow)',
                 }}
               >
                 {profile.title}
@@ -110,104 +110,44 @@ export default function About() {
                   fontSize: 'var(--text-md)',
                   lineHeight: 'var(--leading-relaxed)',
                   color: 'var(--color-body)',
+                  textShadow: 'var(--glass-text-shadow)',
                 }}
               >
-                {summary}
+                {intro}
               </p>
-              <div style={{ display: 'flex', gap: 10, marginTop: 20, flexWrap: 'wrap' }}>
-                <a href={profile.linkedin} className={pillStyles.pillLink}>
-                  LinkedIn
-                </a>
-                <a href={`mailto:${profile.email}`} className={pillStyles.pillLink}>
-                  Email
-                </a>
-                <span style={pillTag}>{profile.location}</span>
-              </div>
+              <LiquidGlassPillRow
+                rootStyle={{ marginTop: 20 }}
+                items={[
+                  { key: 'linkedin', content: 'LinkedIn', href: profile.linkedin, className: pillStyles.pillLink },
+                  {
+                    key: 'email',
+                    content: 'Email',
+                    href: `mailto:${profile.email}`,
+                    className: pillStyles.pillLink,
+                  },
+                  { key: 'location', content: profile.location },
+                ]}
+              />
+              <p
+                style={{
+                  margin: '12px 0 0',
+                  fontSize: 'var(--text-sm)',
+                  color: 'var(--color-subtle)',
+                  textShadow: 'var(--glass-text-shadow)',
+                }}
+              >
+                {languages.join(' · ')}
+              </p>
             </div>
           </div>
         </GlassPanel>
 
+        {/* What I do — capability pillars, not a 30+ item skill tag wall. */}
         <GlassPanel>
-          <h2 style={{
-              margin: '0 0 20px',
-              fontSize: 'var(--text-xl)',
-              lineHeight: 'var(--leading-snug)',
-              fontWeight: 700,
-              color: 'var(--color-heading)',
-            }}>
-            Skills
-          </h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
-            {skills.map((skill) => (
-              <span key={skill} style={pillTag}>
-                {skill}
-              </span>
-            ))}
-          </div>
-        </GlassPanel>
-
-        <GlassPanel>
-          <h2 style={{
-              margin: '0 0 20px',
-              fontSize: 'var(--text-xl)',
-              lineHeight: 'var(--leading-snug)',
-              fontWeight: 700,
-              color: 'var(--color-heading)',
-            }}>
-            Experience
-          </h2>
-          {experience.map((entry) => (
-            <div key={entry.company}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-                <div>
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: 'var(--text-lg)',
-                      lineHeight: 'var(--leading-snug)',
-                      fontWeight: 700,
-                      color: 'var(--color-heading)',
-                    }}
-                  >
-                    {entry.title} · {entry.company}
-                  </h3>
-                  <p style={{ margin: '4px 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-subtle)' }}>
-                    {entry.location}
-                  </p>
-                </div>
-                <p style={{ margin: 0, fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-subtle)' }}>
-                  {entry.period}
-                </p>
-              </div>
-              <ul style={{ margin: '14px 0 0', paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
-                {entry.bullets.map((b) => (
-                  <li
-                    key={b}
-                    style={{ fontSize: 'var(--text-base)', lineHeight: 'var(--leading-relaxed)', color: 'var(--color-body)' }}
-                  >
-                    {b}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </GlassPanel>
-
-        {/* Education/Awards stay visually side by side — plain (non-glass)
-            flex row wrapper, each card its own root sized via flex. */}
-        <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
-          <GlassPanel style={{ flex: '1 1 260px' }}>
-            <h2 style={{
-              margin: '0 0 16px',
-              fontSize: 'var(--text-xl)',
-              lineHeight: 'var(--leading-snug)',
-              fontWeight: 700,
-              color: 'var(--color-heading)',
-            }}>
-              Education
-            </h2>
-            {education.map((e) => (
-              <div key={e.school}>
+          <SectionHeading>What I do</SectionHeading>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
+            {pillars.map((pillar) => (
+              <div key={pillar.title} style={{ flex: '1 1 340px', minWidth: 260 }}>
                 <h3
                   style={{
                     margin: 0,
@@ -215,100 +155,145 @@ export default function About() {
                     lineHeight: 'var(--leading-snug)',
                     fontWeight: 700,
                     color: 'var(--color-heading)',
+                    textShadow: 'var(--glass-text-shadow)',
                   }}
                 >
-                  {e.degree}
+                  {pillar.title}
                 </h3>
-                <p style={{ margin: '4px 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-subtle)' }}>
-                  {e.school} · {e.location}
+                <p
+                  style={{
+                    margin: '6px 0 12px',
+                    fontSize: 'var(--text-base)',
+                    lineHeight: 'var(--leading-relaxed)',
+                    color: 'var(--color-body)',
+                    textShadow: 'var(--glass-text-shadow)',
+                  }}
+                >
+                  {pillar.description}
                 </p>
-                <p style={{ margin: '2px 0 10px', fontSize: 'var(--text-sm)', color: 'var(--color-subtle)' }}>
-                  {e.period}
-                </p>
-                {e.notes.map((n) => (
-                  <p
-                    key={n}
-                    style={{ margin: '0 0 4px', fontSize: 'var(--text-sm)', lineHeight: 'var(--leading-relaxed)', color: 'var(--color-body)' }}
-                  >
-                    {n}
-                  </p>
-                ))}
+                <LiquidGlassPillRow gap={8} items={pillar.tags.map((tag) => ({ key: tag }))} />
               </div>
             ))}
+          </div>
+        </GlassPanel>
 
-            <h2
+        {/* The highlight — one story told in full, not a bullet dump of every
+            responsibility across the role. */}
+        <GlassPanel>
+          <SectionHeading>The highlight</SectionHeading>
+          <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+            <h3
               style={{
-                margin: '24px 0 12px',
-                fontSize: 'var(--text-xl)',
+                margin: 0,
+                fontSize: 'var(--text-lg)',
                 lineHeight: 'var(--leading-snug)',
                 fontWeight: 700,
                 color: 'var(--color-heading)',
+                textShadow: 'var(--glass-text-shadow)',
               }}
             >
-              Certifications
-            </h2>
-            <ul style={{ margin: 0, paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {certifications.map((c) => (
-                <li key={c.name} style={{ fontSize: 'var(--text-sm)', color: 'var(--color-body)' }}>
-                  {c.name} — <span style={{ color: 'var(--color-subtle)' }}>{c.issuer}</span>
-                </li>
-              ))}
-            </ul>
-          </GlassPanel>
-
-          <GlassPanel style={{ flex: '1 1 260px' }}>
-            <h2 style={{
-              margin: '0 0 16px',
-              fontSize: 'var(--text-xl)',
-              lineHeight: 'var(--leading-snug)',
-              fontWeight: 700,
-              color: 'var(--color-heading)',
-            }}>
-              Awards
-            </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {awards.map((a) => (
-                <div key={a.title}>
-                  <h3
-                    style={{
-                      margin: 0,
-                      fontSize: 'var(--text-lg)',
-                      lineHeight: 'var(--leading-snug)',
-                      fontWeight: 700,
-                      color: 'var(--color-heading)',
-                    }}
-                  >
-                    {a.title}
-                  </h3>
-                  <p
-                    style={{ margin: '2px 0 0', fontSize: 'var(--text-sm)', lineHeight: 'var(--leading-relaxed)', color: 'var(--color-body)' }}
-                  >
-                    {a.description}
-                  </p>
+              {story.role} · {story.company}
+            </h3>
+            <p
+              style={{
+                margin: 0,
+                fontSize: 'var(--text-sm)',
+                fontWeight: 600,
+                color: 'var(--color-subtle)',
+                textShadow: 'var(--glass-text-shadow)',
+              }}
+            >
+              {story.period}
+            </p>
+          </div>
+          <p style={{ margin: '4px 0 0', fontSize: 'var(--text-sm)', color: 'var(--color-subtle)', textShadow: 'var(--glass-text-shadow)' }}>
+            {story.location}
+          </p>
+          <p
+            style={{
+              margin: '16px 0 20px',
+              fontSize: 'var(--text-base)',
+              lineHeight: 'var(--leading-relaxed)',
+              color: 'var(--color-body)',
+              textShadow: 'var(--glass-text-shadow)',
+            }}
+          >
+            {story.body}
+          </p>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 28, marginBottom: 20 }}>
+            {story.stats.map((stat) => (
+              <div key={stat.label}>
+                <div
+                  style={{
+                    fontSize: 'var(--text-2xl)',
+                    lineHeight: 'var(--leading-tight)',
+                    fontWeight: 800,
+                    fontFamily: 'var(--font-heading)',
+                    color: 'var(--color-heading)',
+                    textShadow: 'var(--glass-text-shadow)',
+                  }}
+                >
+                  {stat.value}
                 </div>
-              ))}
-            </div>
+                <div
+                  style={{
+                    fontSize: 'var(--text-sm)',
+                    color: 'var(--color-subtle)',
+                    textShadow: 'var(--glass-text-shadow)',
+                  }}
+                >
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+          <Link
+            to="/projects"
+            style={{
+              fontSize: 'var(--text-sm)',
+              fontWeight: 600,
+              color: 'var(--color-accent)',
+              textShadow: 'var(--glass-text-shadow)',
+            }}
+          >
+            See what shipped from it on the Projects page →
+          </Link>
+        </GlassPanel>
 
-            <h2
-              style={{
-                margin: '24px 0 12px',
-                fontSize: 'var(--text-xl)',
-                lineHeight: 'var(--leading-snug)',
-                fontWeight: 700,
-                color: 'var(--color-heading)',
-              }}
-            >
-              Languages
-            </h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {languages.map((l) => (
-                <span key={l.name} style={pillTag}>
-                  {l.name} · {l.level}
-                </span>
-              ))}
-            </div>
-          </GlassPanel>
-        </div>
+        {/* A few highlights — the strongest handful of facts, not the full
+            education/awards/certification record. */}
+        <GlassPanel>
+          <SectionHeading>A few highlights</SectionHeading>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {highlights.map((h) => (
+              <div key={h.title}>
+                <h3
+                  style={{
+                    margin: 0,
+                    fontSize: 'var(--text-lg)',
+                    lineHeight: 'var(--leading-snug)',
+                    fontWeight: 700,
+                    color: 'var(--color-heading)',
+                    textShadow: 'var(--glass-text-shadow)',
+                  }}
+                >
+                  {h.title}
+                </h3>
+                <p
+                  style={{
+                    margin: '4px 0 0',
+                    fontSize: 'var(--text-base)',
+                    lineHeight: 'var(--leading-relaxed)',
+                    color: 'var(--color-body)',
+                    textShadow: 'var(--glass-text-shadow)',
+                  }}
+                >
+                  {h.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </GlassPanel>
       </section>
     </PageShell>
   );

@@ -12,9 +12,15 @@ body,
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-body);
   background: var(--color-bg);
   color: var(--color-body);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-heading);
 }
 
 a {

@@ -1,14 +1,15 @@
 import type { GlassConfig } from '@ybouane/liquidglass';
 import PageShell from '../components/layout/PageShell';
 import LiquidGlassSurface from '../components/glass/LiquidGlassSurface';
-import { regularGlass } from '../components/glass/glassPresets';
+import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
+import { frostedGlass } from '../components/glass/glassPresets';
 import { projects } from '../content/projects';
 import styles from './Projects.module.css';
 
 // cornerRadius 32 matches GlassCard's own default radius, which every card
 // here used to render at. Doubles as this page's CSS border-radius too —
 // see LiquidGlassSurface.
-const projectsGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = { ...regularGlass, cornerRadius: 32 };
+const projectsGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = { ...frostedGlass, cornerRadius: 32 };
 
 export default function Projects() {
   return (
@@ -33,6 +34,7 @@ export default function Projects() {
             letterSpacing: 'var(--tracking-tight)',
             fontWeight: 800,
             color: 'var(--color-heading)',
+            textShadow: 'var(--glass-text-shadow)',
           }}
         >
           Projects
@@ -92,13 +94,25 @@ export default function Projects() {
                     lineHeight: 'var(--leading-snug)',
                     fontWeight: 700,
                     color: 'var(--color-heading)',
+                    textShadow: 'var(--glass-text-shadow)',
                   }}
                 >
                   {p.name}
                 </h2>
                 {/* Secondary/indigo accent: this label is the external destination the whole
-                    card links out to, same "leaves the site" rule as About's contact pills. */}
-                <span style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--color-accent-secondary)' }}>
+                    card links out to, same "leaves the site" rule as About's contact pills.
+                    --color-accent-secondary-onglass (not the plain --color-accent-secondary
+                    About's pills use) — this span sits directly on the naked glass panel, not
+                    on a guaranteed-light pill backing, so it needs the same light-text-plus-
+                    shadow treatment as --color-heading/--color-body above. */}
+                <span
+                  style={{
+                    fontSize: 'var(--text-sm)',
+                    fontWeight: 600,
+                    color: 'var(--color-accent-secondary-onglass)',
+                    textShadow: 'var(--glass-text-shadow)',
+                  }}
+                >
                   {p.urlLabel}
                 </span>
               </div>
@@ -108,28 +122,12 @@ export default function Projects() {
                   fontSize: 'var(--text-base)',
                   lineHeight: 'var(--leading-relaxed)',
                   color: 'var(--color-body)',
+                  textShadow: 'var(--glass-text-shadow)',
                 }}
               >
                 {p.description}
               </p>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                {p.stack.map((tech) => (
-                  <span
-                    key={tech}
-                    style={{
-                      padding: '8px 14px',
-                      borderRadius: 999,
-                      fontSize: 'var(--text-sm)',
-                      fontWeight: 600,
-                      color: 'var(--color-label)',
-                      background: 'var(--glass-pill-bg)',
-                      border: '1px solid var(--glass-pill-border)',
-                    }}
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
+              <LiquidGlassPillRow gap={8} items={p.stack.map((tech) => ({ key: tech }))} />
             </div>
           </LiquidGlassSurface>
         ))}

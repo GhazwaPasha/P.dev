@@ -9,13 +9,33 @@
   --color-blob-purple: oklch(90% 0.05 300);
   --color-blob-cyan: oklch(91% 0.04 220);
 
-  /* nav */
-  --color-nav-active: oklch(0% 0 0);
-  --color-nav-inactive: oklch(20% 0.02 260);
+  /* nav — nav icons sit directly on the WebGL glass panel (see
+     components/glass/LiquidGlassSurface.tsx: it has no CSS background of
+     its own, only a shader refracting whatever's behind it), which can
+     render anywhere from pale to near-black depending on what part of the
+     ambient bg video is behind it at that moment. Light, same reasoning as
+     --color-heading/--color-body below. */
+  --color-nav-active: rgba(255, 255, 255, 1);
+  --color-nav-inactive: rgba(255, 255, 255, 0.55);
 
-  /* text */
-  --color-heading: oklch(24% 0.02 260);
-  --color-body: oklch(38% 0.02 260);
+  /* text — white, not dark and not oklch-grey: everything below
+     (heading/body/subtle, plus nav above) renders directly on a real WebGL
+     glass panel with no CSS background of its own (see
+     LiquidGlassSurface.tsx) — it's a shader refracting whatever part of the
+     ambient bg video/photo sits behind it, which swings from near-white (a
+     bright patch of sky) to near-black (a mountain silhouette) depending on
+     where the card lands on the page. Dark text (this block's old values)
+     read fine on the light patches but vanished on the dark ones. A plain
+     desaturated oklch grey reads muddy rather than legible on either end —
+     solid/translucent white (the same "primary/secondary/tertiary white"
+     ladder iOS's own dark-UI text hierarchy uses) stays recognizably white
+     at every step instead. Paired with --glass-text-shadow (below): white
+     alone is the flip side of the same problem (invisible on the panel's
+     light patches instead of its dark ones) — the shadow is what buys back
+     legibility there, a soft dark blur behind the glyphs that dark text
+     never needed against dark patches but white text does. */
+  --color-heading: rgba(255, 255, 255, 0.96);
+  --color-body: rgba(255, 255, 255, 0.82);
   --color-accent: oklch(58% 0.16 255);
   --color-accent-hover: oklch(50% 0.17 255);
   /* Secondary accent — same lightness/chroma formula as --color-accent, hue
@@ -25,15 +45,44 @@
      you inside the site (nav, focus rings, internal CTAs). */
   --color-accent-secondary: oklch(58% 0.16 300);
   --color-accent-secondary-hover: oklch(50% 0.17 300);
-  --color-label: oklch(30% 0.02 260);
-  /* Was oklch(55% 0.15 255) — chroma 0.15 is accent-strength saturation (the
-     same order as --color-accent's 0.16), so secondary text (job titles,
-     dates, locations) rendered as a visibly blue-tinted color instead of a
-     neutral gray, reading like unstyled links rather than de-emphasized
-     text. Chroma dropped to match the heading/body/label family (0.02);
-     lightness darkened from 55% to 46% for better contrast at the small
-     sizes (13-14px) this token is mostly used at. */
-  --color-subtle: oklch(46% 0.02 260);
+  /* Light counterpart of --color-accent-secondary, for the one place that
+     accent renders directly on the naked glass panel instead of on a
+     guaranteed-light pill (Projects' external-link url label) — the plain
+     --color-accent-secondary stays as-is because everywhere else it's used
+     (pill hover/focus states in About.module.css, Projects.module.css) is
+     already sitting on --glass-pill-bg's solid light backing, where the
+     darker/mid-tone value still reads correctly. */
+  --color-accent-secondary-onglass: oklch(84% 0.07 300);
+  /* Pill/chip text (LiquidGlassPillRow's .pill, GlassPill.module.css) — same
+     naked-WebGL-panel situation as --color-heading/--color-body above (the
+     pill has no solid CSS backing behind its text either, just the shader),
+     so it gets the same white-plus-shadow treatment rather than staying
+     dark. */
+  --color-label: rgba(255, 255, 255, 0.9);
+  /* Dimmest step of the on-glass text family (heading > body > subtle,
+     brightest/most prominent to dimmest/least) — job titles, dates,
+     locations, meta text directly on the naked glass panel. Was
+     oklch(46% 0.02 260) (dark); see the --color-heading comment above for
+     why this whole family flipped light — and white, specifically, over
+     just a lighter oklch grey. */
+  --color-subtle: rgba(255, 255, 255, 0.62);
+  /* Soft dark blur behind the on-glass text family above — without this,
+     light text would just trade one failure mode for the opposite one
+     (invisible on the panel's light patches instead of its dark ones).
+     Two layers: a tight one for edge definition, a wider one for a soft
+     halo, both dark enough to read against either extreme the panel can
+     render. Covers the whole on-glass text family: --color-heading/
+     --color-body/--color-subtle/--color-label, --color-nav-*, and
+     --color-accent-secondary-onglass. */
+  --glass-text-shadow: 0 1px 3px rgba(0, 0, 0, 0.55), 0 2px 10px rgba(0, 0, 0, 0.35);
+
+  /* typefaces — Inter stays the body/UI face everywhere (labels, pills,
+     paragraphs); Fraunces is a display serif reserved for headings only
+     (h1/h2/h3), giving the page a portfolio/editorial voice instead of
+     reading as one uniform UI font top to bottom. Both self-hosted via
+     @fontsource, see main.tsx. */
+  --font-heading: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 
   /* type scale — seven steps, collapsed from what was previously ad-hoc
      inline px values scattered per component (h3 alone appeared at 15, 16
@@ -58,14 +107,16 @@
      "designed" feel, the way large SF Pro Display headlines are tracked. */
   --tracking-tight: -0.015em;
 
-  /* glass — real surfaces (cards, the nav pill, the logo badges) now get
-     their background/blur/border/shadow from WebGL refraction (see
-     components/glass/LiquidGlassSurface.tsx), not these tokens. What's left
-     here is just for the small plain-CSS pills/chips scattered across the
-     site (About's skill/contact pills, Projects' tech chips, the logo
-     badges' hover-fan chips) that were never full glass surfaces themselves. */
-  --glass-pill-bg: rgba(255, 255, 255, 0.7);
-  --glass-pill-border: rgba(255, 255, 255, 0.85);
+  /* glass — every surface on the site (cards, the nav pill, the logo
+     badges, and now every pill/chip too — About's skill/contact/language
+     pills, Projects' tech chips, via LiquidGlassPillRow) gets its
+     background/blur/border/shadow from WebGL refraction (see
+     components/glass/LiquidGlassSurface.tsx), not these tokens.
+     --glass-panel-bg/border are what each of those `[data-glass]` elements
+     paints as its own CSS backing underneath the shader canvas — see the
+     comment below. --glass-blur/--glass-shadow are unused by anything real
+     glass now covers; kept in case a future surface still needs a plain-CSS
+     fallback look. */
   --glass-blur: blur(24px) saturate(160%) contrast(1.08);
   --glass-shadow: 0 20px 56px rgba(31, 41, 55, 0.16);
 }

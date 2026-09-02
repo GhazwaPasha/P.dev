@@ -19,6 +19,13 @@
   color: var(--color-nav-inactive);
   cursor: pointer;
   transition: color 200ms ease;
+  /* These are SVG icons using fill="currentColor", not text — text-shadow
+     doesn't apply to SVG fills, so drop-shadow (the filter equivalent) does
+     the same job as --glass-text-shadow does for the text tokens: keeps the
+     now-light --color-nav-* icons visible against the pill's own light
+     patches, not just its dark ones. See tokens.css's --color-heading
+     comment for why the pill needs this at all. */
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.55));
 }
 
 .icon:hover {

@@ -62,9 +62,24 @@ export default function GlassBackdropVideo({
       aria-hidden="true"
       style={{
         position: 'fixed',
-        inset: 0,
+        // Deliberately taller than the viewport (and centered on it, via the
+        // negative top) rather than a plain `inset: 0`. LiquidGlass.ts reads
+        // this element's raw geometry to know how far its content extends —
+        // it has no idea the video is only ever *painted* within the
+        // viewport (visibility:hidden here doesn't change that geometry).
+        // A glass panel scrolled half off-screen still asks for background
+        // covering its *entire* padded box, including the sliver currently
+        // above y=0 or below the viewport's bottom edge; a `100vh`-tall box
+        // simply doesn't reach there, so that sliver falls through to the
+        // library's own white scene-primer instead of real video — the
+        // "whitish look" on a panel that's half scrolled in or out. One
+        // extra viewport-height of margin above and below comfortably
+        // covers how far any of our cards can be off-screen while still
+        // partially visible (their own height is well under 100vh).
+        top: '-100vh',
+        left: 0,
         width: '100vw',
-        height: '100vh',
+        height: '300vh',
         objectFit: 'cover',
         visibility: 'hidden',
       }}

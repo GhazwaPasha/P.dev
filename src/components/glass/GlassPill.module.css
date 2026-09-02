@@ -1,0 +1,23 @@
+/* Base visual for every pill rendered by LiquidGlassPillRow — the `[data-glass]`
+   element itself still needs a CSS background/border (see LiquidGlassSurface's
+   own comment on --glass-panel-bg: the shader bends/tints whatever's behind
+   it but has no white backing of its own, so text readability depends on
+   this), plus layout/typography. Kept as a real stylesheet class rather than
+   inline styles so per-pill interactive variants (About's LinkedIn/Email
+   pills — see About.module.css's .pillLink) can override individual
+   properties like `border-color` on `:hover` through normal CSS cascade;
+   inline styles would always win over those and silently break the hover. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-label);
+  text-shadow: var(--glass-text-shadow);
+  background: var(--glass-panel-bg);
+  border: 1px solid var(--glass-panel-border);
+  text-decoration: none;
+  pointer-events: auto;
+}

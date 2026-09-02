@@ -1,3 +1,28 @@
+diff --git a/node_modules/@ybouane/liquidglass/dist/LiquidGlass.js b/node_modules/@ybouane/liquidglass/dist/LiquidGlass.js
+index fc90da5..bab3ea4 100644
+--- a/node_modules/@ybouane/liquidglass/dist/LiquidGlass.js
++++ b/node_modules/@ybouane/liquidglass/dist/LiquidGlass.js
+@@ -936,8 +936,18 @@ export class LiquidGlass {
+         else {
+             this._sceneCtx.clearRect(0, 0, width, height);
+         }
+-        this._sceneCtx.fillStyle = '#ffffff';
+-        this._sceneCtx.fillRect(0, 0, width, height);
++        // Patched (see patches/@ybouane+liquidglass+1.0.3.patch): this used
++        // to fillRect an opaque #ffffff primer here before any real
++        // contributor (video, prior glass) got drawn on top. Whatever a
++        // panel's own compose pass fails to fully paint over — e.g. a card
++        // scrolled half outside the fixed-position backdrop video's own
++        // box — was left showing that primer verbatim: a hard, blown-out
++        // white patch. Leaving the canvas at its already-transparent
++        // cleared state instead means an uncovered gap reads as black/dim
++        // (the shader only reads texture .rgb, so transparent-vs-opaque
++        // black looks identical) — a much less jarring failure mode on this
++        // site's dark theme, on top of (not instead of) actually closing
++        // the gap itself (see GlassBackdropVideo's oversized backdrop box).
+     }
+     _glassHasDynamicContributors(currentGlass, sampleRect, rootRect, dpr) {
+         // A glass element marked data-dynamic on its own root counts
 diff --git a/node_modules/@ybouane/liquidglass/dist/shaders.js b/node_modules/@ybouane/liquidglass/dist/shaders.js
 index 3f559f1..0ae7996 100644
 --- a/node_modules/@ybouane/liquidglass/dist/shaders.js
@@ -36,6 +61,31 @@ index 3f559f1..0ae7996 100644
  
  	gl_FragColor = vec4(fin, mask * u_alpha);
  }`;
+diff --git a/node_modules/@ybouane/liquidglass/src/LiquidGlass.ts b/node_modules/@ybouane/liquidglass/src/LiquidGlass.ts
+index eb224d2..000cdaa 100644
+--- a/node_modules/@ybouane/liquidglass/src/LiquidGlass.ts
++++ b/node_modules/@ybouane/liquidglass/src/LiquidGlass.ts
+@@ -1147,8 +1147,18 @@ export class LiquidGlass {
+ 		} else {
+ 			this._sceneCtx.clearRect(0, 0, width, height);
+ 		}
+-		this._sceneCtx.fillStyle = '#ffffff';
+-		this._sceneCtx.fillRect(0, 0, width, height);
++		// Patched (see patches/@ybouane+liquidglass+1.0.3.patch): this used
++		// to fillRect an opaque #ffffff primer here before any real
++		// contributor (video, prior glass) got drawn on top. Whatever a
++		// panel's own compose pass fails to fully paint over — e.g. a card
++		// scrolled half outside the fixed-position backdrop video's own
++		// box — was left showing that primer verbatim: a hard, blown-out
++		// white patch. Leaving the canvas at its already-transparent
++		// cleared state instead means an uncovered gap reads as black/dim
++		// (the shader only reads texture .rgb, so transparent-vs-opaque
++		// black looks identical) — a much less jarring failure mode on this
++		// site's dark theme, on top of (not instead of) actually closing
++		// the gap itself (see GlassBackdropVideo's oversized backdrop box).
+ 	}
+ 
+ 	private _glassHasDynamicContributors(
 diff --git a/node_modules/@ybouane/liquidglass/src/shaders.ts b/node_modules/@ybouane/liquidglass/src/shaders.ts
 index daa399a..887525c 100644
 --- a/node_modules/@ybouane/liquidglass/src/shaders.ts

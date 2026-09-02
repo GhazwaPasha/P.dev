@@ -4,7 +4,7 @@ import PageShell from '../components/layout/PageShell';
 import AvatarHero from '../components/hero/AvatarHero';
 import ButterflyCursor from '../components/cursor/ButterflyCursor';
 import LiquidGlassRoot from '../components/glass/LiquidGlassRoot';
-import { regularGlass } from '../components/glass/glassPresets';
+import { frostedGlass } from '../components/glass/glassPresets';
 import LogoBadges from '../components/hero/LogoBadges';
 import styles from '../components/hero/IdentityCard.module.css';
 import { BG_VIDEO_PLAYBACK_RATE } from '../components/layout/bgVideo';
@@ -13,7 +13,9 @@ import { BG_VIDEO_PLAYBACK_RATE } from '../components/layout/bgVideo';
 // down and reinitialize its WebGL context on every Home render. cornerRadius
 // is per-surface (must match this card's own CSS border-radius) so it's
 // layered on top of the shared preset here rather than living in it.
-const identityGlassDefaults: Partial<GlassConfig> = { ...regularGlass, cornerRadius: 28 };
+// Uses frostedGlass rather than the shared regularGlass preset — About's and
+// Projects' cards stay on regularGlass.
+const identityGlassDefaults: Partial<GlassConfig> = { ...frostedGlass, cornerRadius: 28 };
 
 export default function Home() {
   const backdropVideoRef = useRef<HTMLVideoElement>(null);
@@ -89,6 +91,7 @@ export default function Home() {
                 letterSpacing: 'var(--tracking-tight)',
                 fontWeight: 800,
                 color: 'var(--color-heading)',
+                textShadow: 'var(--glass-text-shadow)',
                 whiteSpace: 'nowrap',
               }}
             >
@@ -101,6 +104,7 @@ export default function Home() {
                 lineHeight: 'var(--leading-normal)',
                 fontWeight: 600,
                 color: 'var(--color-subtle)',
+                textShadow: 'var(--glass-text-shadow)',
               }}
             >
               Full Stack Dev
@@ -126,6 +130,7 @@ export default function Home() {
                     lineHeight: 'var(--leading-normal)',
                     fontWeight: 600,
                     color: 'var(--color-body)',
+                    textShadow: 'var(--glass-text-shadow)',
                   }}
                 >
                   <span

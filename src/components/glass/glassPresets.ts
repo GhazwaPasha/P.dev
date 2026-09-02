@@ -40,3 +40,50 @@ export const regularGlass: Partial<GlassConfig> = {
   shadowSpread: 16,
   shadowOffsetY: 6,
 };
+
+/**
+ * Frosted variant of the above — heavier blur standing in as the dominant
+ * effect, with refraction and chromAberration pulled back to match: a
+ * strongly diffused backdrop makes the sharp bend/fringe of real refraction
+ * read as noise rather than glass, so both are dialed down instead of left
+ * at regularGlass's clearer-pane values. tintStrength is raised a touch for
+ * the slightly milky cast frosted glass has over clear. Kept separate from
+ * regularGlass (rather than a couple of overrides on it) since nearly every
+ * knob differs, not just blurAmount.
+ */
+export const frostedGlass: Partial<GlassConfig> = {
+  blurAmount: 0.75,
+  refraction: 0.2,
+  chromAberration: 0.0,
+  edgeHighlight: 0.1,
+  specular: 0.03,
+  fresnel: 0.4,
+  tintStrength: 0.2,
+  shadowOpacity: 0.26,
+  shadowSpread: 16,
+  shadowOffsetY: 6,
+};
+
+/**
+ * Dark variant of regularGlass — negative brightness darkens the captured
+ * backdrop itself (smoked glass, not just a darker tint over the same
+ * light pane), so fresnel and specular are both pulled back to match: a
+ * surface that's absorbing light rather than a clear one shouldn't still
+ * glint at grazing angles as brightly as regularGlass does. shadowOpacity/
+ * spread are raised instead — a dark panel needs a visibly deeper shadow to
+ * still read as elevated above this site's own dark background rather than
+ * flattening into it.
+ */
+export const darkGlass: Partial<GlassConfig> = {
+  blurAmount: 0.3,
+  refraction: 0.6,
+  chromAberration: 0.05,
+  edgeHighlight: 0.12,
+  specular: 0.05,
+  fresnel: 0.4,
+  tintStrength: 0.05,
+  brightness: -0.25,
+  shadowOpacity: 0.38,
+  shadowSpread: 18,
+  shadowOffsetY: 8,
+};

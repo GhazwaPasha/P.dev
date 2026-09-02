@@ -1,32 +1,26 @@
-export interface ExperienceEntry {
-  company: string;
-  location: string;
-  title: string;
-  period: string;
-  bullets: string[];
-}
-
-export interface EducationEntry {
-  school: string;
-  location: string;
-  degree: string;
-  period: string;
-  notes: string[];
-}
-
-export interface Certification {
-  name: string;
-  issuer: string;
-}
-
-export interface Award {
+export interface CapabilityPillar {
   title: string;
   description: string;
+  tags: string[];
 }
 
-export interface LanguageEntry {
-  name: string;
-  level: string;
+export interface StoryStat {
+  value: string;
+  label: string;
+}
+
+export interface Story {
+  role: string;
+  company: string;
+  location: string;
+  period: string;
+  body: string;
+  stats: StoryStat[];
+}
+
+export interface Highlight {
+  title: string;
+  description: string;
 }
 
 export interface Project {
