@@ -1,0 +1,31 @@
+/* The pill's own background/blur/border/shadow now come from real WebGL
+   refraction (see NavPill.tsx / LiquidGlassSurface) instead of living here
+   as plain CSS — this file only owns the decorative bits layered on top.
+
+   The active-item indicator used to be a flat white CSS circle (`.indicator`,
+   plus a `.icon.active` color change and a `.icon:hover` white background)
+   — all replaced by NavPill.tsx's own nested LiquidGlassSurface, a real
+   glass circle that slides to the active icon and is the only "you are
+   here" signal now. */
+
+.icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--color-nav-inactive);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+
+.icon:hover {
+  color: var(--color-nav-active);
+}
+
+.icon:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}

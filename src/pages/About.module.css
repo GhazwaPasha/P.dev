@@ -1,0 +1,30 @@
+/* Interactive variant of the inline `pillTag` style, for pills that are actual links.
+   Both current uses (LinkedIn, mailto Email) leave the site, so this uses the
+   secondary/indigo accent — see tokens.css: blue stays reserved for
+   in-site navigation and focus. */
+.pillLink {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-label);
+  background: var(--glass-pill-bg);
+  border: 1px solid var(--glass-pill-border);
+  transition: color 200ms ease, background 200ms ease, border-color 200ms ease, transform 150ms ease;
+}
+
+.pillLink:hover {
+  color: var(--color-accent-secondary);
+  border-color: var(--color-accent-secondary);
+}
+
+.pillLink:active {
+  transform: scale(0.96);
+}
+
+.pillLink:focus-visible {
+  outline: 2px solid var(--color-accent-secondary);
+  outline-offset: 2px;
+}

@@ -1,0 +1,76 @@
+diff --git a/node_modules/@ybouane/liquidglass/dist/shaders.js b/node_modules/@ybouane/liquidglass/dist/shaders.js
+index 3f559f1..0ae7996 100644
+--- a/node_modules/@ybouane/liquidglass/dist/shaders.js
++++ b/node_modules/@ybouane/liquidglass/dist/shaders.js
+@@ -254,14 +254,23 @@ void main() {
+ 	float totalSpec = (sp1 + sp2 + spB + sp4) * u_spec;
+ 
+ 	// ── Inner border / stroke highlight ──
++	// topBias / rimBias: the panel is lit from the top, so every rim-brightening
++	// term below (stroke, edge highlight, and the fresnel whitening) is scaled
++	// down near the bottom instead of glowing evenly all the way around —
++	// without this, fresnel/rim are computed purely from distance-to-edge
++	// (rrSDF), which is direction-agnostic, so the bottom rim would read as
++	// bright as the top (a "second white line" opposite the intended highlight).
++	// rimBias floors at 0.3 rather than 0 — real glass still catches *some*
++	// light at the bottom, just dimmer, so a hard cutoff would look flat/fake.
+ 	float borderWidth = 1.5;
+ 	float innerStroke = smoothstep(-borderWidth - 1.0, -borderWidth, sdf)
+ 	                  * (1.0 - smoothstep(-1.0, 0.0, sdf));
+ 	float topBias = 0.5 + 0.5 * (-v_localPx.y / half_.y);
++	float rimBias = 0.3 + 0.7 * topBias;
+ 	innerStroke *= (0.4 + 0.6 * topBias);
+ 
+ 	// ── Edge highlight & inner glow ──
+-	float rim = edge * u_edgeHL * 0.22;
++	float rim = edge * u_edgeHL * 0.22 * rimBias;
+ 	float innerGlow = smoothstep(5.0, 0.0, -sdf) * u_edgeHL * 0.15;
+ 
+ 	// ── Environment-like reflection (fake) ──
+@@ -273,7 +282,7 @@ void main() {
+ 	fin += vec3(rim + innerGlow);
+ 	fin += vec3(innerStroke * u_edgeHL * 0.55);
+ 	fin += vec3(envRefl);
+-	fin = mix(fin, vec3(1.0), fres * 0.2);
++	fin = mix(fin, vec3(1.0), fres * 0.2 * rimBias);
+ 
+ 	gl_FragColor = vec4(fin, mask * u_alpha);
+ }`;
+diff --git a/node_modules/@ybouane/liquidglass/src/shaders.ts b/node_modules/@ybouane/liquidglass/src/shaders.ts
+index daa399a..887525c 100644
+--- a/node_modules/@ybouane/liquidglass/src/shaders.ts
++++ b/node_modules/@ybouane/liquidglass/src/shaders.ts
+@@ -261,14 +261,23 @@ void main() {
+ 	float totalSpec = (sp1 + sp2 + spB + sp4) * u_spec;
+ 
+ 	// ── Inner border / stroke highlight ──
++	// topBias / rimBias: the panel is lit from the top, so every rim-brightening
++	// term below (stroke, edge highlight, and the fresnel whitening) is scaled
++	// down near the bottom instead of glowing evenly all the way around —
++	// without this, fresnel/rim are computed purely from distance-to-edge
++	// (rrSDF), which is direction-agnostic, so the bottom rim would read as
++	// bright as the top (a "second white line" opposite the intended highlight).
++	// rimBias floors at 0.3 rather than 0 — real glass still catches *some*
++	// light at the bottom, just dimmer, so a hard cutoff would look flat/fake.
+ 	float borderWidth = 1.5;
+ 	float innerStroke = smoothstep(-borderWidth - 1.0, -borderWidth, sdf)
+ 	                  * (1.0 - smoothstep(-1.0, 0.0, sdf));
+ 	float topBias = 0.5 + 0.5 * (-v_localPx.y / half_.y);
++	float rimBias = 0.3 + 0.7 * topBias;
+ 	innerStroke *= (0.4 + 0.6 * topBias);
+ 
+ 	// ── Edge highlight & inner glow ──
+-	float rim = edge * u_edgeHL * 0.22;
++	float rim = edge * u_edgeHL * 0.22 * rimBias;
+ 	float innerGlow = smoothstep(5.0, 0.0, -sdf) * u_edgeHL * 0.15;
+ 
+ 	// ── Environment-like reflection (fake) ──
+@@ -280,7 +289,7 @@ void main() {
+ 	fin += vec3(rim + innerGlow);
+ 	fin += vec3(innerStroke * u_edgeHL * 0.55);
+ 	fin += vec3(envRefl);
+-	fin = mix(fin, vec3(1.0), fres * 0.2);
++	fin = mix(fin, vec3(1.0), fres * 0.2 * rimBias);
+ 
+ 	gl_FragColor = vec4(fin, mask * u_alpha);
+ }`;

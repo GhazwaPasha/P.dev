@@ -1,0 +1,45 @@
+.heroFrame {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 760px;
+  bottom: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: transparent;
+}
+
+/*
+ * r3f writes an explicit pixel width/height onto the <canvas> itself, derived
+ * from its own (React-state, one tick async) measurement of this container.
+ * On an abrupt viewport-height change that measurement can briefly lag behind
+ * this box's real layout size; since the canvas is transparent, an oversized
+ * stale canvas clipped by `overflow: hidden` above exposed the page
+ * background through the uncovered strip. Pinning the canvas's CSS box
+ * to the container via plain layout (not the JS-driven inline style) keeps it
+ * in sync with .heroFrame on every paint, independent of that timing.
+ */
+.heroFrame canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.fallbackFrame {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  bottom: 0;
+}
+
+.fallbackImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 24px;
+  display: block;
+}

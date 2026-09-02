@@ -1,0 +1,18 @@
+/* The card <a> is itself the glass element now (see Projects.tsx) — GlassCard
+   (and its `interactive` hover-lift) is gone, so the lift is reproduced here
+   directly instead. Secondary/indigo accent on the focus ring: the card is
+   itself an external (target="_blank") link, same "leaves the site" rule as
+   urlLabel and About's pills. */
+.cardLink {
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.cardLink:hover {
+  transform: translateY(-4px);
+}
+
+.cardLink:focus-visible {
+  outline: 2px solid var(--color-accent-secondary);
+  outline-offset: 4px;
+  border-radius: 32px;
+}

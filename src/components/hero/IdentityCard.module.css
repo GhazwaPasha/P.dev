@@ -1,0 +1,13 @@
+.wrap {
+  position: absolute;
+  top: 50%;
+  right: 64px;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+@media (max-width: 980px) {
+  .wrap {
+    display: none;
+  }
+}
