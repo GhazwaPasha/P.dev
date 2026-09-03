@@ -4,6 +4,7 @@ import LiquidGlassSurface from '../components/glass/LiquidGlassSurface';
 import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
 import { frostedGlass } from '../components/glass/glassPresets';
 import { projects } from '../content/projects';
+import { withBase } from '../lib/assetPath';
 import styles from './Projects.module.css';
 
 // cornerRadius 32 matches GlassCard's own default radius, which every card
@@ -65,7 +66,6 @@ export default function Projects() {
             }}
           >
             <div
-              aria-label={p.imageLabel}
               style={{
                 width: 220,
                 height: 160,
@@ -80,10 +80,19 @@ export default function Projects() {
                 lineHeight: 'var(--leading-snug)',
                 fontWeight: 700,
                 textAlign: 'center',
-                padding: 12,
+                padding: 8,
               }}
             >
-              {p.name}
+              <img
+                src={withBase(p.logo)}
+                alt={p.imageLabel}
+                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = 'none';
+                  target.parentElement?.insertAdjacentText('beforeend', p.name);
+                }}
+              />
             </div>
             <div style={{ flex: 1, minWidth: 260 }}>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>

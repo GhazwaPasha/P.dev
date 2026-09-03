@@ -8,6 +8,7 @@ import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
 import { frostedGlass } from '../components/glass/glassPresets';
 import pillStyles from './About.module.css';
 import { profile, intro, pillars, story, highlights, languages } from '../content/about';
+import { withBase } from '../lib/assetPath';
 
 // cornerRadius 32 matches GlassCard's own default radius, which every card
 // on this page used to render at (none passed a `radius` override). Doubles
@@ -89,12 +90,12 @@ export default function About() {
           <GlassPanel>
           <div style={{ display: 'flex', gap: 36, alignItems: 'center', flexWrap: 'wrap' }}>
             <div
-              aria-label="portrait photo placeholder"
               style={{
                 width: 160,
                 height: 160,
                 flexShrink: 0,
                 borderRadius: '50%',
+                overflow: 'hidden',
                 background:
                   'linear-gradient(135deg, var(--color-blob-blue), var(--color-blob-purple))',
                 display: 'flex',
@@ -105,7 +106,16 @@ export default function About() {
                 color: '#fff',
               }}
             >
-              PS
+              <img
+                src={withBase('/images/profile.jpg')}
+                alt={profile.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  target.style.display = 'none';
+                  target.parentElement?.insertAdjacentHTML('beforeend', 'PS');
+                }}
+              />
             </div>
             <div style={{ flex: 1, minWidth: 260 }}>
               <h1

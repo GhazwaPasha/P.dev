@@ -3,8 +3,9 @@ import type { Project } from '../types/content';
 export const projects: Project[] = [
   {
     slotId: 'lexcheck-thumb',
-    imageLabel: 'product screenshot',
+    imageLabel: 'LexCheck logo',
     name: 'LexCheck',
+    logo: '/logos/lexcheck.svg',
     url: 'https://www.lexcheck.com/',
     urlLabel: 'lexcheck.com',
     description:
@@ -15,8 +16,9 @@ export const projects: Project[] = [
   },
   {
     slotId: 'cohere-thumb',
-    imageLabel: 'product screenshot',
+    imageLabel: 'Cohere logo',
     name: 'Cohere',
+    logo: '/logos/cohere.svg',
     url: 'https://cohere.live/',
     urlLabel: 'cohere.live',
     description:

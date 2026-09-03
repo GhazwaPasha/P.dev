@@ -27,6 +27,8 @@ export interface Project {
   slotId: string;
   imageLabel: string;
   name: string;
+  /** Path under /public, e.g. "/logos/lexcheck.svg". */
+  logo: string;
   url: string;
   urlLabel: string;
   description: string;
