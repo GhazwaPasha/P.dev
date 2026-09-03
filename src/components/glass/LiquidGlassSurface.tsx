@@ -38,9 +38,9 @@ export type LiquidGlassSurfaceProps<T extends ElementType> = OwnProps<T> &
  * with `cornerRadius` shared between the shader config and the CSS
  * border-radius instead of duplicated at each call site.
  *
- * See GlassBackdropVideo for why the backdrop is `visibility: hidden` +
- * `position: fixed`, and why that's still true (and still needed) now that
- * it's a live video instead of a static photo.
+ * See GlassBackdropVideo for why the backdrop is `opacity: 0` +
+ * `position: fixed`, and why that's still needed now that it's a live
+ * video instead of a static photo.
  */
 export default function LiquidGlassSurface<T extends ElementType = 'div'>({
   as,

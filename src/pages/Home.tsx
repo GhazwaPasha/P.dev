@@ -16,7 +16,7 @@ import { withBase } from '../lib/assetPath';
 // layered on top of the shared preset here rather than living in it.
 // Uses frostedGlass rather than the shared regularGlass preset — About's and
 // Projects' cards stay on regularGlass.
-const identityGlassDefaults: Partial<GlassConfig> = { ...frostedGlass, cornerRadius: 28 };
+const identityGlassDefaults: Partial<GlassConfig> = { ...frostedGlass, cornerRadius: 32 };
 
 export default function Home() {
   const backdropVideoRef = useRef<HTMLVideoElement>(null);
@@ -33,7 +33,7 @@ export default function Home() {
   }, []);
 
   return (
-    <PageShell noScroll cursorNone>
+    <PageShell noScroll>
       <section style={{ position: 'relative', zIndex: 1, height: '100vh', boxSizing: 'border-box' }}>
         {/* Rendered before AvatarHero (and with no z-index of its own, so it
             doesn't create a stacking context that would carry its contents
@@ -74,8 +74,8 @@ export default function Home() {
             className={styles.wrap}
             data-glass
             style={{
-              borderRadius: 28,
-              padding: '28px 40px',
+              borderRadius: 32,
+              padding: '40px 56px',
               pointerEvents: 'auto',
               // No CSS backdrop-filter fallback here on purpose — that's a
               // different look from the shader, not a rougher version of it,
@@ -87,7 +87,7 @@ export default function Home() {
             <h1
               style={{
                 margin: 0,
-                fontSize: 'var(--text-2xl)',
+                fontSize: 'var(--text-3xl)',
                 lineHeight: 'var(--leading-tight)',
                 letterSpacing: 'var(--tracking-tight)',
                 fontWeight: 800,
@@ -96,57 +96,20 @@ export default function Home() {
                 whiteSpace: 'nowrap',
               }}
             >
-              Pivak-e-Safa
+              Pivak E Safa
             </h1>
             <p
               style={{
-                margin: '6px 0 0',
-                fontSize: 'var(--text-base)',
+                margin: '8px 0 0',
+                fontSize: 'var(--text-lg)',
                 lineHeight: 'var(--leading-normal)',
                 fontWeight: 600,
                 color: 'var(--color-subtle)',
                 textShadow: 'var(--glass-text-shadow)',
               }}
             >
-              Full Stack Dev
+              Full Stack Developer
             </p>
-            <ul
-              style={{
-                margin: '14px 0 0',
-                padding: 0,
-                listStyle: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 6,
-              }}
-            >
-              {['Web', 'iOS', 'Android', 'PC'].map((platform) => (
-                <li
-                  key={platform}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    fontSize: 'var(--text-sm)',
-                    lineHeight: 'var(--leading-normal)',
-                    fontWeight: 600,
-                    color: 'var(--color-body)',
-                    textShadow: 'var(--glass-text-shadow)',
-                  }}
-                >
-                  <span
-                    style={{
-                      width: 5,
-                      height: 5,
-                      borderRadius: '50%',
-                      background: 'var(--color-accent)',
-                      flexShrink: 0,
-                    }}
-                  />
-                  {platform}
-                </li>
-              ))}
-            </ul>
           </div>
         </LiquidGlassRoot>
         <AvatarHero />

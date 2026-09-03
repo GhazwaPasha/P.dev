@@ -1,0 +1,16 @@
+/* Plain fade-in for the outgoing/incoming page content on navigation — see
+   RootLayout's doc comment. Global.css's prefers-reduced-motion guard
+   already collapses this to near-instant for anyone who's asked for that,
+   so it isn't repeated here. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation: fadeIn 260ms ease both;
+}

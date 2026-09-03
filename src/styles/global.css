@@ -4,6 +4,19 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Reserves the scrollbar's gutter on every page, whether or not that
+     page actually scrolls — without this, Home (exactly 100vh, never
+     scrolls) has a few pixels more usable viewport width than About/
+     Projects (content taller than one screen, so the browser shows a real
+     scrollbar). NavPill is `position: fixed; left: 50%;
+     transform: translateX(-50%)`, so it centers against that viewport
+     width — a scrollbar appearing/disappearing between pages shifted its
+     centerpoint left by half the scrollbar's width, which is why it sat in
+     a visibly different spot on About than on Home. */
+  scrollbar-gutter: stable;
+}
+
 html,
 body,
 #root {

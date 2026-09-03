@@ -18,18 +18,32 @@ interface GlassBackdropVideoProps {
  * you — visually reads as "this card has its own background" instead of
  * seeing through to the live one).
  *
- * `position: fixed` + `visibility: hidden`, same as the static-photo
- * backdrop this replaces: LiquidGlass.ts reads the live video frame
- * directly off the element every render (`vid.readyState` / `drawImage`),
- * independent of CSS — so hiding it doesn't hide it from the shader, it
- * only stops it from *also* being a real, opaque, full-viewport DOM layer.
+ * `position: fixed` + `opacity: 0` (+ `pointerEvents: none`, since unlike
+ * `visibility: hidden` an `opacity: 0` element stays hit-testable) keeps
+ * this invisible to the visitor while staying a real, painted layer.
+ * LiquidGlass.ts reads the live video frame directly off the element every
+ * render (`vid.readyState` / `drawImage`), independent of CSS, so either
+ * approach hides it from the *visitor* equally — but `visibility: hidden`
+ * (used here previously) removes an element from the render/paint tree
+ * outright, which is exactly the kind of signal browsers use to
+ * de-prioritize or throttle a `<video>`'s own decode work, since as far as
+ * the browser's concerned nothing is ever going to be shown. `opacity: 0`
+ * keeps the element genuinely in the paint pipeline (fully composited,
+ * just at zero alpha) — the same reason Home's identity-card backdrop
+ * video, which is never hidden at all (just painted behind its glass
+ * panel in normal DOM order), never has this problem. `opacity: 0` isn't a
+ * behavior change for LiquidGlass's own compositing either: this element's
+ * `position: fixed` already puts it in the "forms a stacking context"
+ * bucket the library sorts by (see LiquidGlass.ts's `_formsStackingContext`
+ * — non-static position alone qualifies), so adding opacity<1 on top
+ * doesn't move it to a different bucket or change its sort position.
  * `fixed` keeps it correctly viewport-sized/positioned no matter where
  * inside the page its own LiquidGlassRoot sits (a card mid-page isn't a
  * full-viewport box, so `absolute` alone wouldn't cover the same region a
- * `position: fixed` real background does). `hidden` matters once more than
- * one of these shares a page (About's cards, Projects' cards, NavPill,
- * LogoBadges, all live at once): an unhidden copy would paint solid over
- * every earlier root's already-rendered content, the same "opaque
+ * `position: fixed` real background does). Staying invisible matters once
+ * more than one of these shares a page (About's cards, Projects' cards,
+ * NavPill, LogoBadges, all live at once): a visible copy would paint solid
+ * over every earlier root's already-rendered content, the same "opaque
  * position:fixed" bug the old photo backdrop's comments already called out.
  */
 export default function GlassBackdropVideo({
@@ -82,7 +96,8 @@ export default function GlassBackdropVideo({
         width: '100vw',
         height: '300vh',
         objectFit: 'cover',
-        visibility: 'hidden',
+        opacity: 0,
+        pointerEvents: 'none',
       }}
     >
       <source src={src} type="video/mp4" />

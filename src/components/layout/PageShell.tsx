@@ -1,25 +1,24 @@
 import type { ReactNode, CSSProperties } from 'react';
-import NavPill from './NavPill';
-import BackgroundBlobs from './BackgroundBlobs';
 
 interface PageShellProps {
   /** Home is a fixed, non-scrolling 100vh screen; About/Projects scroll. */
   noScroll?: boolean;
-  cursorNone?: boolean;
   children: ReactNode;
 }
 
-export default function PageShell({ noScroll, cursorNone, children }: PageShellProps) {
+/**
+ * Per-page content wrapper — just the scroll/overflow container for a page's
+ * own section(s). The persistent chrome (nav pill, ambient background) lives
+ * once in RootLayout now, not per-page — see RootLayout.tsx for why:
+ * mounting it fresh inside every page component meant it was torn down and
+ * rebuilt (new WebGL context, new fade-in) on every single route change,
+ * which is what made navigating between pages read as a reload instead of a
+ * transition, even though the background itself never actually changes.
+ */
+export default function PageShell({ noScroll, children }: PageShellProps) {
   const wrapperStyle: CSSProperties = noScroll
     ? { position: 'relative', height: '100vh', overflow: 'hidden' }
     : { position: 'relative', minHeight: '100vh', overflow: 'hidden' };
-  if (cursorNone) wrapperStyle.cursor = 'none';
 
-  return (
-    <div style={wrapperStyle}>
-      <BackgroundBlobs />
-      <NavPill />
-      {children}
-    </div>
-  );
+  return <div style={wrapperStyle}>{children}</div>;
 }

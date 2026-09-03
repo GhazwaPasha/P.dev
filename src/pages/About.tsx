@@ -2,7 +2,8 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import type { GlassConfig } from '@ybouane/liquidglass';
 import PageShell from '../components/layout/PageShell';
-import LiquidGlassSurface from '../components/glass/LiquidGlassSurface';
+import LiquidGlassRoot from '../components/glass/LiquidGlassRoot';
+import GlassBackdropVideo from '../components/glass/GlassBackdropVideo';
 import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
 import { frostedGlass } from '../components/glass/glassPresets';
 import pillStyles from './About.module.css';
@@ -10,17 +11,29 @@ import { profile, intro, pillars, story, highlights, languages } from '../conten
 
 // cornerRadius 32 matches GlassCard's own default radius, which every card
 // on this page used to render at (none passed a `radius` override). Doubles
-// as this page's CSS border-radius too — see LiquidGlassSurface.
+// as this page's CSS border-radius too — see the `data-glass` divs below.
 const aboutGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = { ...frostedGlass, cornerRadius: 32 };
 
 /**
- * One card = one LiquidGlassSurface, matching Home's identity-card shape.
+ * The 4 sections below used to each be their own LiquidGlassSurface — 4
+ * separate WebGL contexts, each with its own always-live video backdrop
+ * (a <video> counts as perpetually "dirty" to the shader, so none of those
+ * 4 contexts ever went idle). That's the same "one context per element"
+ * pattern NavPill/LogoBadges/LiquidGlassPillRow already moved away from —
+ * one shared root, many `[data-glass]` siblings — applied here for the
+ * same reason: fewer contexts competing for the browser's concurrent-WebGL
+ * budget, which is what was making whichever card finished its one-time
+ * render earliest (this page's first section) the most likely one caught
+ * mid context-loss/recovery when you happened to look at it.
  */
 function GlassPanel({ style, children }: { style?: CSSProperties; children: ReactNode }) {
   return (
-    <LiquidGlassSurface defaults={aboutGlassDefaults} rootStyle={style} style={{ padding: 40 }}>
+    <div
+      data-glass
+      style={{ borderRadius: aboutGlassDefaults.cornerRadius, padding: 40, pointerEvents: 'auto', ...style }}
+    >
       {children}
-    </LiquidGlassSurface>
+    </div>
   );
 }
 
@@ -56,8 +69,19 @@ export default function About() {
           gap: 28,
         }}
       >
-        {/* Intro — who I am, in my own words, not a resume objective line. */}
-        <GlassPanel>
+        {/* One shared LiquidGlassRoot for all 4 sections below — see
+            GlassPanel's doc comment. `pointerEvents: 'none'` on the root
+            itself (each GlassPanel sets its own `pointerEvents: 'auto'`
+            back on), same split NavPill/LogoBadges/LiquidGlassSurface
+            already use: the injected shader canvas shouldn't intercept
+            clicks outside a card's own box, only the visible card should. */}
+        <LiquidGlassRoot
+          defaults={aboutGlassDefaults}
+          style={{ display: 'flex', flexDirection: 'column', gap: 28, pointerEvents: 'none' }}
+        >
+          <GlassBackdropVideo />
+          {/* Intro — who I am, in my own words, not a resume objective line. */}
+          <GlassPanel>
           <div style={{ display: 'flex', gap: 36, alignItems: 'center', flexWrap: 'wrap' }}>
             <div
               aria-label="portrait photo placeholder"
@@ -142,7 +166,14 @@ export default function About() {
           </div>
         </GlassPanel>
 
-        {/* What I do — capability pillars, not a 30+ item skill tag wall. */}
+        {/* What I do — capability pillars, not a 30+ item skill tag wall.
+            Every pillar used to render its own LiquidGlassPillRow (its own
+            WebGL context + its own async init) — 4 contexts just for this
+            section, more than every other section on the page combined,
+            which is why this was the section still fading in after
+            everything else had settled. All pillars' tags now share the one
+            row below, the same "one shared context per row" pattern the
+            intro section's contact pills already use. */}
         <GlassPanel>
           <SectionHeading>What I do</SectionHeading>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 24 }}>
@@ -162,7 +193,7 @@ export default function About() {
                 </h3>
                 <p
                   style={{
-                    margin: '6px 0 12px',
+                    margin: '6px 0 0',
                     fontSize: 'var(--text-base)',
                     lineHeight: 'var(--leading-relaxed)',
                     color: 'var(--color-body)',
@@ -171,10 +202,14 @@ export default function About() {
                 >
                   {pillar.description}
                 </p>
-                <LiquidGlassPillRow gap={8} items={pillar.tags.map((tag) => ({ key: tag }))} />
               </div>
             ))}
           </div>
+          <LiquidGlassPillRow
+            rootStyle={{ marginTop: 20 }}
+            gap={8}
+            items={pillars.flatMap((pillar) => pillar.tags).map((tag) => ({ key: tag }))}
+          />
         </GlassPanel>
 
         {/* The highlight — one story told in full, not a bullet dump of every
@@ -294,6 +329,7 @@ export default function About() {
             ))}
           </div>
         </GlassPanel>
+        </LiquidGlassRoot>
       </section>
     </PageShell>
   );
