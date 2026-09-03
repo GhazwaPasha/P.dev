@@ -13,7 +13,7 @@ export const profile = {
 // what I care about building, not a restated list of capabilities (those
 // live in `pillars` below).
 export const intro =
-  "I care about the whole product, not just my corner of the stack — a good " +
+  "I care about the whole product, not just my corner of the stack. A good " +
   'idea only counts once someone can actually use it. That usually means moving ' +
   'between a Figma file, an API, and a database in the same afternoon, and ' +
   "keeping the thing usable and fast the whole way through. I've spent the last " +
@@ -24,19 +24,19 @@ export const pillars: CapabilityPillar[] = [
   {
     title: 'Product engineering, end to end',
     description:
-      'Full-stack builds spanning the client, the API, and the database behind it — not just the part closest to the design file.',
+      'Full-stack builds spanning the client, the API, and the database behind it, not just the part closest to the design file.',
     tags: ['React', 'Next.js', 'Angular', 'React Native', 'TypeScript'],
   },
   {
     title: 'Backend & cloud',
     description:
-      'Services and data layers built to hold up under real usage — REST and GraphQL APIs on .NET and Node, backed by SQL and NoSQL stores on AWS and Azure.',
+      'Services and data layers built to hold up under real usage: REST and GraphQL APIs on .NET and Node, backed by SQL and NoSQL stores on AWS and Azure.',
     tags: ['.NET Core', 'Node.js', 'C#', 'GraphQL', 'MySQL', 'MongoDB', 'AWS', 'Azure'],
   },
   {
     title: 'Design systems & UX',
     description:
-      'Interfaces built from a shared component language rather than one-off screens — consistent, and accessible by default.',
+      'Interfaces built from a shared component language rather than one-off screens, consistent and accessible by default.',
     tags: ['Figma', 'Material UI', 'Ant Design', 'Accessibility'],
   },
   {
@@ -55,7 +55,7 @@ export const story: Story = {
   body:
     "I've been a core team member on a product I helped take from an initial " +
     'concept to a multi-million dollar business, later acquired by a prominent ' +
-    'Silicon Valley tech leader — working across Angular, React, and React ' +
+    'Silicon Valley tech leader, working across Angular, React, and React ' +
     'Native on the front end and .NET, Node, and GraphQL behind it, with a design ' +
     'system holding the UI together across four platforms. Along the way I worked ' +
     'directly with product managers, designers, and engineers across the US, ' +
@@ -75,7 +75,7 @@ export const highlights: Highlight[] = [
   {
     title: 'B.S. Computer Science, Magna Cum Laude',
     description:
-      'National University of Computer and Emerging Sciences — 3.76/4.00, Gold Medalist for the highest CGPA in the graduating class.',
+      'National University of Computer and Emerging Sciences, 3.76/4.00 GPA, Gold Medalist for the highest CGPA in the graduating class.',
   },
   {
     title: 'Founder, Women in Engineering',
@@ -91,5 +91,3 @@ export const highlights: Highlight[] = [
     description: 'React (Udemy), Secure Full-Stack MEAN (EC-Council), and UX Design foundations (Google).',
   },
 ];
-
-export const languages: string[] = ['English', 'Urdu', 'Punjabi'];

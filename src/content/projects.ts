@@ -23,7 +23,7 @@ export const projects: Project[] = [
     urlLabel: 'cohere.live',
     description:
       'All-in-one platform for coaches and course creators to sell and deliver their ' +
-      'services — scheduling, payments, community, and content, with an AI assistant ' +
+      'services: scheduling, payments, community, and content, with an AI assistant ' +
       'built in.',
     stack: ['React', 'React Native', '.NET', 'MongoDB'],
   },

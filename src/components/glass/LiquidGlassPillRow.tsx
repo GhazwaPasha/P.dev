@@ -1,8 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import type { GlassConfig } from '@ybouane/liquidglass';
 import LiquidGlassRoot from './LiquidGlassRoot';
-import GlassBackdropVideo from './GlassBackdropVideo';
-import SharedGlassBackdrop from './SharedGlassBackdrop';
+import GlassBackdrop from './GlassBackdrop';
 import { frostedGlass } from './glassPresets';
 import pillStyles from './GlassPill.module.css';
 
@@ -58,23 +57,17 @@ export default function LiquidGlassPillRow({
   items,
   gap = 10,
   rootStyle,
-  sharedBackdrop = false,
 }: {
   items: GlassPillItem[];
   gap?: number;
   rootStyle?: CSSProperties;
-  /** Use the page-wide shared video decode (SharedGlassBackdrop) instead of
-   * this row's own `<video>`. Opt-in — only worth it on a page that already
-   * mounts several glass contexts at once (About); elsewhere (Projects) a
-   * single row's own decode is no worse than the shared one. */
-  sharedBackdrop?: boolean;
 }) {
   return (
     <LiquidGlassRoot
       defaults={pillRowGlassDefaults}
       style={{ display: 'flex', flexWrap: 'wrap', gap, ...rootStyle }}
     >
-      {sharedBackdrop ? <SharedGlassBackdrop /> : <GlassBackdropVideo />}
+      <GlassBackdrop />
       {items.map((item) => {
         // Dynamic per-item tag ('a' when linking out, 'span' otherwise) —
         // cast rather than a generic type param since the tag is decided

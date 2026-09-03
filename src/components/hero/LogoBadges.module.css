@@ -6,11 +6,11 @@
    to carry the flex/transform layout. */
 .wrap {
   position: absolute;
-  /* `top` and `transform` are set inline from LogoBadges.tsx instead of
-     here — see the comment there (next to ROOT_WIDTH/ROOT_HEIGHT) for why
-     the plain `top: 50%; transform: translateY(-50%)` trick doesn't work
-     once this root is padded past its own visual content. */
-  left: 108px;
+  /* Both `top` and `right` are set inline from LogoBadges.tsx instead of
+     here — see the comment there (next to ROOT_WIDTH/ROOT_HEIGHT) for why a
+     plain `right: 64px` (matching the identity card's own right edge,
+     IdentityCard.module.css) doesn't work once this root is padded past its
+     own visual content. */
   z-index: 1;
 }
 

@@ -1,7 +1,7 @@
 import type { GlassConfig } from '@ybouane/liquidglass';
 import { NavLink, useLocation } from 'react-router-dom';
 import LiquidGlassRoot from '../glass/LiquidGlassRoot';
-import GlassBackdropVideo from '../glass/GlassBackdropVideo';
+import GlassBackdrop from '../glass/GlassBackdrop';
 import { frostedGlass } from '../glass/glassPresets';
 import styles from './NavPill.module.css';
 
@@ -115,7 +115,7 @@ export default function NavPill() {
         cursor: 'default',
       }}
     >
-      <GlassBackdropVideo />
+      <GlassBackdrop />
       {/* The pill's own capsule background — absolutely positioned to fill
           the root's padding box (the root *is* the fixed, padded nav pill
           now) rather than being the flex container itself, so it can sit

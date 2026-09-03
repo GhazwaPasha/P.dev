@@ -1,7 +1,7 @@
 import type { ComponentPropsWithoutRef, CSSProperties, ElementType, ReactNode } from 'react';
 import type { GlassConfig } from '@ybouane/liquidglass';
 import LiquidGlassRoot from './LiquidGlassRoot';
-import GlassBackdropVideo from './GlassBackdropVideo';
+import GlassBackdrop from './GlassBackdrop';
 
 interface OwnProps<T extends ElementType> {
   /** Tag for the actual glass surface — 'div' for cards, 'nav'/'a' for interactive ones. */
@@ -20,12 +20,6 @@ interface OwnProps<T extends ElementType> {
    * to override this (`position: absolute; inset: 0`, to fill its hero
    * section); every other surface is fine sitting in normal flow. */
   rootStyle?: CSSProperties;
-  /** Backdrop video src the shader refracts — same file BackgroundBlobs
-   * already plays as the real page background, so a surface anywhere on the
-   * page refracts the actual live background instead of a static photo. */
-  backdropVideoSrc?: string;
-  /** Poster frame for the hidden backdrop video. */
-  backdropPoster?: string;
 }
 
 export type LiquidGlassSurfaceProps<T extends ElementType> = OwnProps<T> &
@@ -33,21 +27,17 @@ export type LiquidGlassSurfaceProps<T extends ElementType> = OwnProps<T> &
 
 /**
  * One real (WebGL-refraction) glass surface: a LiquidGlassRoot carrying
- * exactly the two children the library expects — a hidden, live backdrop
- * video for the shader to sample, and the actual `[data-glass]` surface —
- * with `cornerRadius` shared between the shader config and the CSS
- * border-radius instead of duplicated at each call site.
+ * exactly the two children the library expects — a hidden backdrop photo
+ * for the shader to sample, and the actual `[data-glass]` surface — with
+ * `cornerRadius` shared between the shader config and the CSS border-radius
+ * instead of duplicated at each call site.
  *
- * See GlassBackdropVideo for why the backdrop is `opacity: 0` +
- * `position: fixed`, and why that's still needed now that it's a live
- * video instead of a static photo.
+ * See GlassBackdrop for why the backdrop is `opacity: 0` + `position: fixed`.
  */
 export default function LiquidGlassSurface<T extends ElementType = 'div'>({
   as,
   defaults,
   rootStyle,
-  backdropVideoSrc,
-  backdropPoster,
   children,
   style,
   ...rest
@@ -56,7 +46,7 @@ export default function LiquidGlassSurface<T extends ElementType = 'div'>({
 
   return (
     <LiquidGlassRoot style={{ position: 'relative', pointerEvents: 'none', ...rootStyle }} defaults={defaults}>
-      <GlassBackdropVideo src={backdropVideoSrc} poster={backdropPoster} />
+      <GlassBackdrop />
       <Tag
         data-glass
         style={{ borderRadius: defaults.cornerRadius, pointerEvents: 'auto', ...(style as CSSProperties) }}

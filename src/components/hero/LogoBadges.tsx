@@ -1,7 +1,7 @@
 import { Fragment, useState, type CSSProperties } from 'react';
 import type { GlassConfig } from '@ybouane/liquidglass';
 import LiquidGlassRoot from '../glass/LiquidGlassRoot';
-import GlassBackdropVideo from '../glass/GlassBackdropVideo';
+import GlassBackdrop from '../glass/GlassBackdrop';
 import { frostedGlass } from '../glass/glassPresets';
 import { projects } from '../../content/projects';
 import { withBase } from '../../lib/assetPath';
@@ -43,21 +43,19 @@ function renderChipLabel(tech: string) {
 }
 
 const BADGE_SIZE = 72;
-const BADGE_GAP = 40;
+const BADGE_GAP = 88;
 
 /**
- * Static top/left for each badge, replacing the old flex-column + per-child
- * translateX stagger (`.wrap { display:flex; gap:40px }` +
- * `.group:first-child/:last-child { transform: translateX(...) }`). Both
- * badges and every chip now have to be *direct* children of one shared
- * LiquidGlassRoot (see the component doc comment below for why), which
- * means there's no more `.group` wrapper div to hang that layout on — these
- * numbers are just that same layout, pre-computed instead of derived from
- * flex + transform.
+ * Static top/left for each badge — a plain side-by-side row (both badges at
+ * the same `top`, `left` stepping by one badge width + BADGE_GAP). Explicit
+ * pixel offsets rather than `display:flex` because badges and every chip
+ * have to be *direct* children of one shared LiquidGlassRoot (see the
+ * component doc comment below for why), which rules out a `.group` wrapper
+ * div to hang flex layout on.
  */
 const GROUP_OFFSETS: Array<{ top: number; left: number }> = [
-  { top: 0, left: 96 }, // LexCheck — first
-  { top: BADGE_SIZE + BADGE_GAP, left: 56 }, // Cohere — last
+  { top: 0, left: 0 }, // LexCheck — first
+  { top: 0, left: BADGE_SIZE + BADGE_GAP }, // Cohere — second
 ];
 
 // LiquidGlass measures and centers panels off this root's own
@@ -68,7 +66,7 @@ const GROUP_OFFSETS: Array<{ top: number; left: number }> = [
 // library does: with a zero-size (or too-small) root, whichever tech chips
 // land farthest from their badge along the reveal arc permanently rendered
 // as flat white circles instead of real glass. Sizing the root to just the
-// badges' own footprint (184px tall) wasn't enough on its own — confirmed
+// badges' own footprint (184px wide) wasn't enough on its own — confirmed
 // live: chips still whited out, because the reveal arc reaches well past
 // that footprint (ARC_RADIUS plus a chip's own half-size and padding, ~124px
 // beyond a badge's center) and the library apparently needs the root to
@@ -135,6 +133,26 @@ const ARC_REACH_PAD = ARC_RADIUS + 40;
 const ROOT_WIDTH = CONTENT_WIDTH + ARC_REACH_PAD * 2;
 const ROOT_HEIGHT = CONTENT_HEIGHT + ARC_REACH_PAD * 2;
 
+// The identity card (Home.tsx) is vertically centered via `top: 50%;
+// transform: translateY(-50%)`, so its own top/bottom edges sit half its
+// rendered height above/below the section's 50% line. CARD_HALF_HEIGHT is
+// that half-height, worked out from the card's own styles: 40px top padding
+// + the h1 (34px * 1.15 line-height) + 8px paragraph margin + the p (18px *
+// 1.45 line-height) + 40px bottom padding, halved. CARD_GAP is the visual
+// breathing room below the card's bottom edge before the badges start. Both
+// feed the `top` calc below instead of the old vertical-centering one, so
+// this group anchors under the card rather than centering independently on
+// the page. FALLBACK_CARD_RIGHT is only the pre-measurement guess used
+// below before Home.tsx's ResizeObserver publishes the real
+// `--card-center-right` custom property (see the comment on `right` below,
+// and the one on that effect in Home.tsx) — it's never relied on for the
+// actual layout, just avoids a coordinate of `NaN` on the very first paint.
+const CARD_HALF_HEIGHT = 77;
+const CARD_GAP = 28;
+const FALLBACK_CARD_RIGHT = 64;
+// Deliberate nudge off dead-center, to the right, purely by eye.
+const CENTER_NUDGE = 24;
+
 /**
  * Both badges and their whole tech-stack fans share ONE LiquidGlassRoot —
  * previously each badge (badge + its own chips) got its own root, i.e. its
@@ -169,18 +187,31 @@ export default function LogoBadges() {
         pointerEvents: 'none',
         width: ROOT_WIDTH,
         height: ROOT_HEIGHT,
-        // Overrides .wrap's `top: 50%; transform: translateY(-50%)` — that
-        // trick centers by the element's *own* height, which would now
-        // center the padded ROOT_HEIGHT box (see ARC_REACH_PAD above)
-        // instead of the group's real CONTENT_HEIGHT, visibly shifting the
-        // badges. This computes the same "centered" position directly from
-        // CONTENT_HEIGHT so the padding added for the library's sake stays
-        // invisible to layout.
-        top: `calc(50% - ${CONTENT_HEIGHT / 2}px)`,
+        // Anchors the group's top edge just below the identity card (see
+        // CARD_HALF_HEIGHT/CARD_GAP above) rather than centering it on the
+        // page. The root's own top-left is the badges' true (unpadded)
+        // top-left too — GROUP_OFFSETS positions them starting flush at
+        // (0, 0) — so, same as the old centering calc this replaces, no
+        // ARC_REACH_PAD term belongs here; that padding only grows
+        // ROOT_WIDTH/HEIGHT to give the library a big-enough rect and never
+        // shifts this root's own top/left away from the real content.
+        top: `calc(50% + ${CARD_HALF_HEIGHT + CARD_GAP}px)`,
+        // Centers the badges' own horizontal center (CONTENT_WIDTH / 2 from
+        // the root's left, since they sit flush-left within it) under
+        // `--card-center-right` — the identity card's real measured
+        // horizontal center, published by a ResizeObserver in Home.tsx (see
+        // the comment on its effect there). A plain
+        // `right: var(--card-center-right)` would instead line up the
+        // *root's* right edge with the card's center — which sits
+        // (ROOT_WIDTH - CONTENT_WIDTH / 2) further right than the content's
+        // own center, all of it empty ARC_REACH_PAD plus half the visible
+        // row — so that difference is subtracted back out here, mirroring
+        // the `top` calc above.
+        right: `calc(var(--card-center-right, ${FALLBACK_CARD_RIGHT}px) - ${ROOT_WIDTH - CONTENT_WIDTH / 2 + CENTER_NUDGE}px)`,
         transform: 'none',
       }}
     >
-      <GlassBackdropVideo />
+      <GlassBackdrop />
       {logos.map((logo, gi) => {
         const stack = stackFor(logo.name);
         const offset = GROUP_OFFSETS[gi];
