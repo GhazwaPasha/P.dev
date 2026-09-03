@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import type { GlassConfig } from '@ybouane/liquidglass';
 import PageShell from '../components/layout/PageShell';
 import LiquidGlassRoot from '../components/glass/LiquidGlassRoot';
-import GlassBackdropVideo from '../components/glass/GlassBackdropVideo';
+import SharedGlassBackdrop from '../components/glass/SharedGlassBackdrop';
 import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
 import { frostedGlass } from '../components/glass/glassPresets';
 import pillStyles from './About.module.css';
@@ -79,7 +79,12 @@ export default function About() {
           defaults={aboutGlassDefaults}
           style={{ display: 'flex', flexDirection: 'column', gap: 28, pointerEvents: 'none' }}
         >
-          <GlassBackdropVideo />
+          {/* This root plus the two LiquidGlassPillRows below are 3 glass
+              contexts alive on this page at once — SharedGlassBackdrop (and
+              `sharedBackdrop` on the pill rows) points all 3 at one shared
+              video decode instead of each running its own; see
+              sharedBgVideo.ts. */}
+          <SharedGlassBackdrop />
           {/* Intro — who I am, in my own words, not a resume objective line. */}
           <GlassPanel>
           <div style={{ display: 'flex', gap: 36, alignItems: 'center', flexWrap: 'wrap' }}>
@@ -141,6 +146,7 @@ export default function About() {
               </p>
               <LiquidGlassPillRow
                 rootStyle={{ marginTop: 20 }}
+                sharedBackdrop
                 items={[
                   { key: 'linkedin', content: 'LinkedIn', href: profile.linkedin, className: pillStyles.pillLink },
                   {
@@ -208,6 +214,7 @@ export default function About() {
           <LiquidGlassPillRow
             rootStyle={{ marginTop: 20 }}
             gap={8}
+            sharedBackdrop
             items={pillars.flatMap((pillar) => pillar.tags).map((tag) => ({ key: tag }))}
           />
         </GlassPanel>
