@@ -4,6 +4,7 @@ import LiquidGlassRoot from '../glass/LiquidGlassRoot';
 import GlassBackdrop from '../glass/GlassBackdrop';
 import { frostedGlass } from '../glass/glassPresets';
 import { projects } from '../../content/projects';
+import { TECH_ICONS } from '../../content/techIcons';
 import { withBase } from '../../lib/assetPath';
 import styles from './LogoBadges.module.css';
 
@@ -25,22 +26,8 @@ function stackFor(name: string): string[] {
   return projects.find((p) => p.name === name)?.stack ?? [];
 }
 
-/** Manual line-break points so compound names fit the small chip circles — display only. */
-const CHIP_LINE_BREAKS: Record<string, [string, string]> = {
-  MongoDB: ['Mongo', 'DB'],
-};
-
-function renderChipLabel(tech: string) {
-  const lines = CHIP_LINE_BREAKS[tech];
-  if (!lines) return tech;
-  return (
-    <>
-      {lines[0]}
-      <br />
-      {lines[1]}
-    </>
-  );
-}
+/** Chip logo size — comfortably inside the 40px circle with its 4px padding. */
+const CHIP_ICON_SIZE = 20;
 
 const BADGE_SIZE = 72;
 const BADGE_GAP = 88;
@@ -253,11 +240,13 @@ export default function LogoBadges() {
             </a>
             {stack.map((tech, i) => {
               const { x, y } = arcOffset(i, stack.length);
+              const Icon = TECH_ICONS[tech];
               return (
                 <div
                   key={tech}
                   data-glass
                   data-config={CHIP_GLASS_CONFIG}
+                  title={tech}
                   aria-hidden="true"
                   className={`${styles.chip}${revealed ? ` ${styles.revealed}` : ''}`}
                   style={
@@ -270,7 +259,7 @@ export default function LogoBadges() {
                     } as CSSProperties
                   }
                 >
-                  {renderChipLabel(tech)}
+                  {Icon ? <Icon size={CHIP_ICON_SIZE} /> : tech}
                 </div>
               );
             })}

@@ -8,6 +8,7 @@ import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
 import { frostedGlass } from '../components/glass/glassPresets';
 import pillStyles from './About.module.css';
 import { profile, intro, pillars, story, highlights } from '../content/about';
+import { TECH_ICONS } from '../content/techIcons';
 import { withBase } from '../lib/assetPath';
 
 // cornerRadius 32 matches GlassCard's own default radius, which every card
@@ -208,7 +209,18 @@ export default function About() {
           <LiquidGlassPillRow
             rootStyle={{ marginTop: 20 }}
             gap={8}
-            items={pillars.flatMap((pillar) => pillar.tags).map((tag) => ({ key: tag }))}
+            items={pillars.flatMap((pillar) => pillar.tags).map((tag) => {
+              const Icon = TECH_ICONS[tag];
+              return {
+                key: tag,
+                content: (
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7 }}>
+                    {Icon && <Icon size={15} aria-hidden="true" />}
+                    {tag}
+                  </span>
+                ),
+              };
+            })}
           />
         </GlassPanel>
 
