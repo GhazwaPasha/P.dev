@@ -1,29 +1,30 @@
-/* The root itself (LiquidGlassRoot, see LogoBadges.tsx) now sits where
-   .wrap used to — no more flex column + per-child translateX stagger,
-   since badge/chip layout is precomputed pixel offsets (GROUP_OFFSETS in
-   the component) instead: every data-glass element has to be a *direct*
-   child of the root, which ruled out the old .group wrapper divs that used
-   to carry the flex/transform layout. */
 .wrap {
   position: absolute;
-  /* Both `top` and `right` are set inline from LogoBadges.tsx instead of
-     here — see the comment there (next to ROOT_WIDTH/ROOT_HEIGHT) for why a
-     plain `right: 64px` (matching the identity card's own right edge,
-     IdentityCard.module.css) doesn't work once this root is padded past its
-     own visual content. */
   z-index: 1;
+  display: flex;
+  pointer-events: none;
+}
+
+/* One badge + its own tech-stack fan. `position: relative` makes this the
+   anchor every chip below positions itself against (`top: 50%; left: 50%`
+   plus the arc's `--x`/`--y` offset) — same idea LogoBadges.tsx's old
+   GROUP_OFFSETS achieved with global pixel math against one shared root,
+   just relative instead of absolute now that there's no "every glass
+   element must be a direct child of one root" constraint forcing that. */
+.group {
+  position: relative;
+  flex-shrink: 0;
 }
 
 .badge {
   position: absolute;
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   padding: 0;
+  pointer-events: auto;
   transition: transform 200ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 200ms ease;
 }
 
@@ -48,18 +49,17 @@
   letter-spacing: 0.02em;
 }
 
-/* Tech-stack chips fan out in an arc above their badge on hover/focus. Real
-   glass now (see LogoBadges.tsx) — this only owns layout, opacity and the
-   two transitions, not background/blur/border/shadow. `.revealed` is set
-   from React state (which badge is hovered/focused) rather than a CSS
-   `:hover`/`:focus-within` cascade — chips are no longer DOM descendants of
-   their badge (both are flat siblings under one shared glass root now), so
-   there's no ancestor relationship left for pure CSS to key off. */
+/* Tech-stack chips fan out in an arc above their badge on hover/focus —
+   plain CSS now (`.group:hover`/`.group:focus-within`, below) instead of
+   React state, now that chips are real DOM descendants of their badge's
+   `.group` again (see LogoBadges.tsx's doc comment for why that used to not
+   be true). */
 .chip {
   position: absolute;
+  top: 50%;
+  left: 50%;
   width: 40px;
   height: 40px;
-  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,16 +73,12 @@
   font-size: 8px;
   font-weight: 700;
   line-height: 1.15;
-  /* --color-body, not --color-label — unlike the pill/chip rows in
-     GlassPill.module.css, this chip has no CSS background of its own (see
-     the comment above: real glass, no plain-CSS backing), so it's on the
-     naked shader panel like --color-heading/--color-body, not on a
-     guaranteed-light pill like --color-label is. */
   color: var(--color-body);
   text-shadow: var(--glass-text-shadow);
 }
 
-.chip.revealed {
+.group:hover .chip,
+.group:focus-within .chip {
   opacity: 1;
   transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1);
 }

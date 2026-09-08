@@ -59,3 +59,34 @@ export const TECH_ICONS: Record<string, IconType> = {
   'Cursor AI': SiCursor,
   'GitHub Copilot': SiGithubcopilot,
 };
+
+/**
+ * Official brand color per tech, for the one place these render as colorful
+ * logos instead of the on-glass monochrome treatment (`currentColor`, via
+ * `--color-*` tokens) every pill/chip elsewhere uses — CapabilitiesCard's
+ * icon grid. Deliberately not every key in TECH_ICONS: a few brands are
+ * monochrome by design (Next.js, GitHub Copilot, Cursor AI all ship
+ * black/white marks, not a hue) and the non-brand stand-ins (SQL,
+ * Accessibility) were never a real logo to begin with — those fall back to
+ * the caller's own default color instead of an invented one.
+ */
+export const TECH_BRAND_COLORS: Record<string, string> = {
+  React: '#61DAFB',
+  'React Native': '#61DAFB',
+  Angular: '#DD0031',
+  TypeScript: '#3178C6',
+  '.NET Core': '#512BD4',
+  '.NET': '#512BD4',
+  'Node.js': '#339933',
+  'C#': '#9B4F96',
+  GraphQL: '#E10098',
+  MySQL: '#4479A1',
+  MongoDB: '#47A248',
+  AWS: '#FF9900',
+  Azure: '#0078D4',
+  Figma: '#A259FF',
+  'Material UI': '#007FFF',
+  'Ant Design': '#0170FE',
+  Git: '#F05032',
+  Jira: '#0052CC',
+};

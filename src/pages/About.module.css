@@ -1,6 +1,6 @@
 /* Interactive variant of GlassPill.module.css's shared `.pill` class (see
-   LiquidGlassPillRow), for pills that are actual links — composed alongside
-   it rather than replacing it, so the base glass background/border still
+   GlassPillRow), for pills that are actual links — composed alongside it
+   rather than replacing it, so the base glass background/border still
    apply and only the interactive states below need to live here. Both
    current uses (LinkedIn, mailto Email) leave the site, so this uses the
    secondary/indigo accent — see tokens.css: blue stays reserved for

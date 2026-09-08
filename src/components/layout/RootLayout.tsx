@@ -33,16 +33,15 @@ function onIdle(cb: () => void): () => void {
  * for the app's lifetime via react-router's nested-layout pattern (App.tsx
  * renders this as the parent route, with `<Outlet/>` standing in for
  * whichever page is active). Previously each page mounted its own copy of
- * both (via PageShell), so every navigation fully tore down and rebuilt the
- * nav's WebGL context and the background canvas — a visible flash-then-
- * refade on every single click even though the background itself never
- * actually changes between pages. Hoisting them here means only the page
- * *content* swaps on navigation now, and it does so with a plain fade
- * instead of an instant, Suspense-fallback-flashing cut.
+ * both (via PageShell), so every navigation fully tore down and rebuilt them
+ * — a visible flash-then-refade on every single click even though the
+ * background itself never actually changes between pages. Hoisting them
+ * here means only the page *content* swaps on navigation now, and it does
+ * so with a plain fade instead of an instant, Suspense-fallback-flashing
+ * cut.
  */
 export default function RootLayout() {
   const { pathname } = useLocation();
-  const isHome = pathname === '/';
 
   useEffect(
     () =>
@@ -55,12 +54,7 @@ export default function RootLayout() {
   );
 
   return (
-    // cursor:none only for Home (ButterflyCursor stands in for the system
-    // pointer there) — applied on this shared wrapper now that NavPill no
-    // longer lives inside a per-page shell, so it still sits under the
-    // override the way it always did; NavPill sets its own inline
-    // `cursor: default` specifically to win back over this when it applies.
-    <div style={{ cursor: isHome ? 'none' : undefined }}>
+    <>
       <BackgroundBlobs />
       <NavPill />
       {/* Keyed by pathname so this (and everything inside it) fully
@@ -78,6 +72,6 @@ export default function RootLayout() {
           <Outlet />
         </Suspense>
       </div>
-    </div>
+    </>
   );
 }

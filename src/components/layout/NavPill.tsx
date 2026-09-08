@@ -1,8 +1,5 @@
-import type { GlassConfig } from '@ybouane/liquidglass';
 import { NavLink, useLocation } from 'react-router-dom';
-import LiquidGlassRoot from '../glass/LiquidGlassRoot';
-import GlassBackdrop from '../glass/GlassBackdrop';
-import { frostedGlass } from '../glass/glassPresets';
+import glass from '../glass/Glass.module.css';
 import styles from './NavPill.module.css';
 
 interface NavItem {
@@ -45,35 +42,6 @@ const items: NavItem[] = [
   },
 ];
 
-// cornerRadius large enough to always clamp to whichever glass element it's
-// applied to's own half-height (GlassRenderer.ts's shader does
-// `min(u_radius, min(w,h)/2)`, same as CSS border-radius) — the same `999`
-// idiom the plain-CSS pills elsewhere on the site use for a capsule shape.
-// Shared by both glass elements below (the pill and the indicator): each
-// clamps against its *own* box, so one config makes the pill a capsule and
-// the indicator a circle without needing a per-element data-config override.
-//
-// zRadius (bevel depth) is NOT left at frostedGlass's inherited 40px
-// default here — that number reads fine on the identity card (a ~210px-tall
-// panel, so a 40px bevel only eats the rim and leaves a large flat center),
-// but this pill is only ~54px tall. A bevel deeper than half an element's
-// own height never reaches a flat plateau (see shaders.ts's bevelHeight —
-// it clamps to `d`, the distance-in, before it ever reaches zR), so the
-// *whole* pill reads as one continuous curve instead of a flat pane with a
-// beveled rim — visibly different material from the identity card even
-// though every other shader parameter is identical. 12px keeps roughly the
-// identity card's own bevel-to-half-height ratio (~0.38) at this size.
-const navGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = {
-  ...frostedGlass,
-  cornerRadius: 999,
-  zRadius: 12,
-};
-
-// See the comment on the indicator element below — this is a per-element
-// data-config override (the library's own escape hatch for exactly this),
-// not a change to the shared default above.
-const INDICATOR_GLASS_CONFIG = JSON.stringify({ zRadius: 30 });
-
 export default function NavPill() {
   const { pathname } = useLocation();
   const activeIndex = items.findIndex((item) =>
@@ -81,23 +49,8 @@ export default function NavPill() {
   );
 
   return (
-    // One root, two `[data-glass]` siblings (pill background + active-item
-    // indicator) instead of two independent roots: they share a single
-    // WebGL context — worth it on a page that already has AvatarHero and
-    // ButterflyCursor's own Three.js contexts plus every other real-glass
-    // surface running at once (confirmed live: a second nav-only context
-    // was enough to trip this sandboxed browser's "too many active WebGL
-    // contexts" eviction, silently blanking whichever surface lost its
-    // context) — and it composes correctly for free: LiquidGlass.ts draws
-    // an earlier glass element's already-rendered output into a later
-    // one's scene (`_drawPriorGlassToScene`), so the indicator — coming
-    // after the pill in DOM order — genuinely refracts the pill's own
-    // glass, reading as a brighter accent floating on it rather than a
-    // flat cutout. The icons (NavLink) are last and plain (no
-    // `data-glass`), so they just paint on top of both in normal DOM order.
-    <LiquidGlassRoot
-      as="nav"
-      defaults={navGlassDefaults}
+    <nav
+      className={glass.glass}
       style={{
         position: 'fixed',
         top: 20,
@@ -108,34 +61,17 @@ export default function NavPill() {
         alignItems: 'center',
         gap: 20,
         padding: '10px 22px',
-        // Home hides the native cursor (see PageShell's cursorNone) in favor of the
-        // 3D butterfly cursor; ButterflyCursor hides itself over <nav> so it
-        // doesn't sit on top of the icons, so the plain system cursor needs to be
-        // switched back on here, overriding that ancestor's `cursor: none`.
-        cursor: 'default',
+        borderRadius: 999,
       }}
     >
-      <GlassBackdrop />
-      {/* The pill's own capsule background — absolutely positioned to fill
-          the root's padding box (the root *is* the fixed, padded nav pill
-          now) rather than being the flex container itself, so it can sit
-          out of the icons' flex flow. */}
-      <div data-glass aria-hidden="true" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }} />
+      {/* Active-item indicator — its own glass surface sliding under the
+          icons, not a real WebGL context refracting the pill's own render
+          anymore (that composited-refraction trick was specific to the old
+          shader; plain CSS just stacks a second, smaller glass circle in
+          the same spot). */}
       {activeIndex !== -1 && (
         <div
-          data-glass
-          // Deliberately NOT navGlassDefaults's zRadius:12 — that value is
-          // tuned for the pill (half-height 27px) to get a flat plateau with
-          // a beveled rim. Applied to this 40px indicator (half-height 20px)
-          // it's *still* small enough to develop its own crisp flat-center-
-          // plus-rim, which reads as a second, competing glass disc sitting
-          // on top of the pill instead of the soft accent it's meant to be
-          // (confirmed live — a distinct pink-rimmed circle floating on the
-          // pill's own blue-rimmed capsule). A much larger zRadius here
-          // keeps the indicator permanently over-beveled at its own size —
-          // no flat plateau ever forms, so it stays a soft blended glow
-          // instead of a separate-looking object.
-          data-config={INDICATOR_GLASS_CONFIG}
+          className={glass.glass}
           aria-hidden="true"
           style={{
             position: 'absolute',
@@ -143,6 +79,7 @@ export default function NavPill() {
             left: 18,
             width: 40,
             height: 40,
+            borderRadius: 999,
             pointerEvents: 'none',
             transform: `translateX(${activeIndex * 52}px)`,
             transition: 'transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1)',
@@ -161,6 +98,6 @@ export default function NavPill() {
           {item.icon}
         </NavLink>
       ))}
-    </LiquidGlassRoot>
+    </nav>
   );
 }

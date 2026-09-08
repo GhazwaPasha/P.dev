@@ -1,0 +1,82 @@
+/*
+ * Fake glass — Kevin Bism's "Recreating Apple's Liquid Glass Effect with
+ * Pure CSS" recipe
+ * (https://dev.to/kevinbism/recreating-apples-liquid-glass-effect-with-pure-css-3gpl),
+ * shared by every glass surface on the site (this used to be a real
+ * WebGL-refraction shader — @ybouane/liquidglass, via LiquidGlassRoot /
+ * LiquidGlassSurface / LiquidGlassPillRow — now dropped entirely):
+ *
+ *   .glass       — the pane itself: a faint flat white wash, a light
+ *     backdrop-filter blur+saturate, a soft bright 1px border (glass edges
+ *     read brighter than the pane itself), and two box-shadows — one outer
+ *     for elevation, one inset for a soft inner glow. No border-radius baked
+ *     in here — every caller sets its own via inline `style={{ borderRadius }}`
+ *     (a plain number now, not a shader `cornerRadius` needing to stay in
+ *     sync with anything), and .glass::after's `border-radius: inherit`
+ *     below picks that up automatically.
+ *   .glass::after — the "liquid" highlight. Two inset box-shadows with a
+ *     *negative spread* (the `0px -11px` / `0px -8px` values) rather than
+ *     the usual positive one — that's what curves the highlight into a soft
+ *     blob hugging one corner/edge instead of a straight inset line, the
+ *     part that actually reads as "liquid" rather than just "blurred". Sits
+ *     at z-index: -1 (behind .glass's own background) and gets its own
+ *     blur + drop-shadow + brightness boost via `filter`, so it reads as a
+ *     soft glow escaping from behind the pane's edge rather than a crisp
+ *     shape sitting on top of it.
+ *
+ * Compose this onto your own class (CSS Modules `composes: glass from
+ * '.../Glass.module.css';`) rather than applying it as a second className
+ * where the element also needs its own background/padding/layout — either
+ * works, since `.glass::after` matches on this file's own hashed class
+ * regardless of which other classes ride along on the same element.
+ */
+.glass {
+  position: relative;
+  background: rgba(255, 255, 255, 0.06);
+  /* saturate(180%) is doing the real "still looks like glass, not fog" work
+     here, boosting whatever color is actually in the blurred backdrop
+     instead of a heavier white wash flattening it toward grey. */
+  backdrop-filter: blur(2px) saturate(180%);
+  -webkit-backdrop-filter: blur(2px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 8px 32px rgba(31, 38, 135, 0.2),
+    inset 0 4px 20px rgba(255, 255, 255, 0.14);
+  /* Own GPU layer, pinned up front (a no-op 3D transform). Without it this
+     flickers/strobes against BackgroundBlobs' looping <video> backdrop
+     instead of blurring steadily — a Chromium quirk where backdrop-filter
+     over constantly-updating video content needs a stable compositor layer,
+     or the browser keeps tearing this one down and rebuilding it on every
+     decoded frame. Harmless now that BackgroundBlobs is a static photo, but
+     costs nothing to leave in for whenever it's a video again. */
+  transform: translateZ(0);
+}
+
+.glass::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+  box-shadow:
+    inset -10px -8px 0px -11px rgba(255, 255, 255, 1),
+    inset 0px -9px 0px -8px rgba(255, 255, 255, 1);
+  opacity: 0.45;
+  filter: blur(1px) drop-shadow(10px 4px 6px black) brightness(106%);
+  pointer-events: none;
+}
+
+/* backdrop-filter has no effect (silently ignored, not an error) on browsers
+   that don't support it — old Firefox, pre-Chromium Edge. Without this a
+   surface would still get its border/highlight/shadow, just with sharp
+   unblurred content showing straight through .glass's near-transparent
+   background, which reads as broken rather than as glass. Fall back to a
+   heavier, nearly-opaque flat panel so it still reads as a distinct surface. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgba(18, 21, 32, 0.82);
+  }
+}

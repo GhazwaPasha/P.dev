@@ -1,16 +1,12 @@
-import type { GlassConfig } from '@ybouane/liquidglass';
 import PageShell from '../components/layout/PageShell';
-import LiquidGlassSurface from '../components/glass/LiquidGlassSurface';
-import LiquidGlassPillRow from '../components/glass/LiquidGlassPillRow';
-import { frostedGlass } from '../components/glass/glassPresets';
+import glass from '../components/glass/Glass.module.css';
+import GlassPillRow from '../components/glass/GlassPillRow';
 import { projects } from '../content/projects';
 import { withBase } from '../lib/assetPath';
 import styles from './Projects.module.css';
 
-// cornerRadius 32 matches GlassCard's own default radius, which every card
-// here used to render at. Doubles as this page's CSS border-radius too —
-// see LiquidGlassSurface.
-const projectsGlassDefaults: Partial<GlassConfig> & { cornerRadius: number } = { ...frostedGlass, cornerRadius: 32 };
+// Matches every card's own default radius on this page.
+const CARD_RADIUS = 32;
 
 export default function Projects() {
   return (
@@ -41,21 +37,17 @@ export default function Projects() {
           Projects
         </h1>
 
-        {/* Same shape as Home's identity card, one LiquidGlassSurface per
-            project — see LiquidGlassSurface for why its backdrop photo is
-            `visibility: hidden` (needed here, and not on Home, because this
-            page stacks more than one of these surfaces down the page). */}
+        {/* Same shape as Home's identity card, one glass surface per project. */}
         {projects.map((p) => (
-          <LiquidGlassSurface
+          <a
             key={p.slotId}
-            as="a"
-            defaults={projectsGlassDefaults}
             href={p.url}
             target="_blank"
             rel="noreferrer"
             aria-label={`${p.name} — visit ${p.urlLabel}`}
-            className={styles.cardLink}
+            className={`${glass.glass} ${styles.cardLink}`}
             style={{
+              borderRadius: CARD_RADIUS,
               color: 'inherit',
               textDecoration: 'none',
               display: 'flex',
@@ -136,9 +128,9 @@ export default function Projects() {
               >
                 {p.description}
               </p>
-              <LiquidGlassPillRow gap={8} items={p.stack.map((tech) => ({ key: tech }))} />
+              <GlassPillRow gap={8} items={p.stack.map((tech) => ({ key: tech }))} />
             </div>
-          </LiquidGlassSurface>
+          </a>
         ))}
       </section>
     </PageShell>

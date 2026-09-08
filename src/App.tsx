@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import RootLayout from './components/layout/RootLayout';
 
 // All three routes are lazy, Home included — Home is the one that statically
-// imports AvatarHero/ButterflyCursor (Three.js/react-three-fiber/drei), so
+// imports AvatarHero (Three.js/react-three-fiber/drei), so
 // if it were the one non-lazy import here, that whole chunk would still ride
 // along in the entry bundle index.html always loads first, on every route.
 // Splitting Home out too means /about and /projects genuinely never fetch

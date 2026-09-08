@@ -37,11 +37,7 @@ export default function AvatarHero() {
   }
 
   return (
-    // data-dynamic: when this sits inside a LiquidGlassRoot, the shader
-    // needs to re-sample this canvas every frame (it's animating on its
-    // own via AvatarModel's useFrame loop) instead of a one-time snapshot.
-    // Harmless outside that context — an unrecognized data attribute.
-    <div className={styles.heroFrame} data-dynamic>
+    <div className={styles.heroFrame}>
       <Canvas
         style={{ width: '100%', height: '100%', display: 'block' }}
         camera={{ fov: 35 }}
