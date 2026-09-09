@@ -30,13 +30,19 @@ export default function GlassPillRow({
   items,
   gap = 10,
   style,
+  className,
 }: {
   items: GlassPillItem[];
   gap?: number;
   style?: CSSProperties;
+  /** For the row's own container div — e.g. a page's own CSS Module class
+   * carrying a mobile media query, which `style` (a plain inline object)
+   * can't express. Distinct from `GlassPillItem.className` above, which
+   * targets each individual pill instead. */
+  className?: string;
 }) {
   return (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap, ...style }}>
+    <div className={className} style={{ display: 'flex', flexWrap: 'wrap', gap, ...style }}>
       {items.map((item) => {
         // Dynamic per-item tag ('a' when linking out, 'span' otherwise) —
         // cast rather than a generic type param since the tag is decided

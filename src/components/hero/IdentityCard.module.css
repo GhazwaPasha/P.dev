@@ -16,7 +16,7 @@
        breakpoint (LogoBadges.module.css / CapabilitiesCard.module.css),
        so there's nothing left to make room for. */
     top: auto;
-    bottom: 4%;
+    bottom: 8%;
     right: auto;
     left: 50%;
     transform: translateX(-50%);
@@ -32,6 +32,11 @@
 @media (max-width: 980px) {
   .content {
     padding: 28px 32px;
+    /* The name/subtitle otherwise sit flush against the card's own left
+       padding edge — fine on desktop, where the card hugs the right side
+       of the screen next to the avatar, but reads as randomly indented
+       once the card's centered as its own standalone element on mobile. */
+    text-align: center;
   }
 }
 

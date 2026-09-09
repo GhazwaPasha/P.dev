@@ -2,7 +2,7 @@ import type { CapabilityPillar, Highlight, Story } from '../types/content';
 
 export const profile = {
   name: 'Pivak E Safa',
-  title: 'Full Stack Engineer',
+  title: 'Full Stack Developer',
   email: 'pivakesafa@gmail.com',
   phone: '+92 311 1777465',
   linkedin: 'https://www.linkedin.com/in/pivak-e-safa/',

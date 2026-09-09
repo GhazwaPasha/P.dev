@@ -53,7 +53,7 @@ export default function About() {
       >
         {/* Intro — who I am, in my own words, not a resume objective line. */}
         <GlassPanel>
-          <div style={{ display: 'flex', gap: 36, alignItems: 'center', flexWrap: 'wrap' }}>
+          <div className={pillStyles.introRow}>
             <div
               style={{
                 width: 160,
@@ -82,7 +82,7 @@ export default function About() {
                 }}
               />
             </div>
-            <div style={{ flex: 1, minWidth: 260 }}>
+            <div className={pillStyles.introBody}>
               <h1
                 style={{
                   margin: '0 0 8px',
@@ -121,6 +121,7 @@ export default function About() {
               </p>
               <GlassPillRow
                 style={{ marginTop: 20 }}
+                className={pillStyles.introPills}
                 items={[
                   { key: 'linkedin', content: 'LinkedIn', href: profile.linkedin, className: pillStyles.pillLink },
                   {
@@ -129,7 +130,6 @@ export default function About() {
                     href: `mailto:${profile.email}`,
                     className: pillStyles.pillLink,
                   },
-                  { key: 'location', content: profile.location },
                 ]}
               />
             </div>

@@ -28,3 +28,52 @@
   outline: 2px solid var(--color-accent-secondary-onglass);
   outline-offset: 2px;
 }
+
+/* Intro section's photo + name/title/text row. */
+.introRow {
+  display: flex;
+  gap: 36px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.introBody {
+  flex: 1;
+  min-width: 260px;
+}
+
+/* Same breakpoint LogoBadges/CapabilitiesCard/IdentityCard already use for
+   "mobile" elsewhere on the site. An explicit `flex-direction: column`
+   rather than just letting `flex-wrap: wrap` do it on its own — relying on
+   the row running out of horizontal space only forces the stack once the
+   photo (160px) + gap (36px) + text (min-width: 260px) genuinely don't fit,
+   i.e. somewhere around 456px of available width, well *narrower* than this
+   980px breakpoint. Above that natural wrap point but still under 980px
+   (a small tablet, a phone in landscape) the two used to stay side by side
+   — column forces the stacked photo-on-top layout unconditionally instead
+   of only sometimes, and guarantees the *order* (photo first, text after)
+   instead of leaving it to depend on exactly how the wrap happens to fall.
+   Text/chips stay left-aligned (`.introBody`/`.introPills` below apply no
+   mobile override of their own) — only the photo above them centers, via
+   the base rule's `align-items: center` (a no-op on `.introBody` itself
+   once it's forced to `width: 100%` below, so it only ever moves the
+   photo). */
+@media (max-width: 980px) {
+  .introRow {
+    flex-direction: column;
+  }
+
+  /* `flex: 1` alone still grows this to fill the column's full width —
+     this isn't fixing a sizing bug, it's dropping the `min-width: 260px`
+     that would otherwise force a wider-than-viewport box (and a
+     horizontal scrollbar) on a phone narrower than 260px plus the card's
+     own padding. */
+  .introBody {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+.introPills {
+  justify-content: flex-start;
+}

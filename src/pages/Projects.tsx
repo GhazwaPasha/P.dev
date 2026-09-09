@@ -50,24 +50,24 @@ export default function Projects() {
               borderRadius: CARD_RADIUS,
               color: 'inherit',
               textDecoration: 'none',
-              display: 'flex',
-              gap: 32,
-              alignItems: 'flex-start',
-              flexWrap: 'wrap',
               padding: 40,
             }}
           >
+            {/* No backing box behind the logo (used to be a gradient blob
+                tile) — it now sits straight on the card's own glass, same
+                as everything else on it. Still a fixed-size flex frame so
+                every logo (whatever its own aspect ratio) centers and caps
+                out at the same footprint. */}
             <div
               style={{
                 width: 220,
                 height: 160,
                 flexShrink: 0,
-                borderRadius: 20,
-                background: 'linear-gradient(135deg, var(--color-blob-cyan), var(--color-blob-purple))',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                color: '#fff',
+                color: 'var(--color-heading)',
+                textShadow: 'var(--glass-text-shadow)',
                 fontSize: 'var(--text-sm)',
                 lineHeight: 'var(--leading-snug)',
                 fontWeight: 700,
@@ -86,8 +86,8 @@ export default function Projects() {
                 }}
               />
             </div>
-            <div style={{ flex: 1, minWidth: 260 }}>
-              <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, flexWrap: 'wrap' }}>
+            <div className={styles.cardBody}>
+              <div className={styles.cardTitleRow}>
                 <h2
                   style={{
                     margin: 0,
@@ -128,7 +128,7 @@ export default function Projects() {
               >
                 {p.description}
               </p>
-              <GlassPillRow gap={8} items={p.stack.map((tech) => ({ key: tech }))} />
+              <GlassPillRow gap={8} className={styles.cardStack} items={p.stack.map((tech) => ({ key: tech }))} />
             </div>
           </a>
         ))}
