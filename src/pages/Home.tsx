@@ -4,7 +4,10 @@ import AvatarHero from '../components/hero/AvatarHero';
 import LogoBadges from '../components/hero/LogoBadges';
 import CapabilitiesCard from '../components/hero/CapabilitiesCard';
 import glass from '../components/glass/Glass.module.css';
+import GlassPillRow from '../components/glass/GlassPillRow';
+import glassPill from '../components/glass/GlassPill.module.css';
 import styles from '../components/hero/IdentityCard.module.css';
+import { profile } from '../content/about';
 
 export default function Home() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -77,6 +80,19 @@ export default function Home() {
               >
                 Full Stack Developer
               </p>
+              <GlassPillRow
+                style={{ marginTop: 20 }}
+                className={styles.pills}
+                items={[
+                  { key: 'linkedin', content: 'LinkedIn', href: profile.linkedin, className: glassPill.pillLink },
+                  {
+                    key: 'email',
+                    content: 'Email',
+                    href: `mailto:${profile.email}`,
+                    className: glassPill.pillLink,
+                  },
+                ]}
+              />
             </div>
           </div>
         </div>

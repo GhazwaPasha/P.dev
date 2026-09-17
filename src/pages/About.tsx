@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PageShell from '../components/layout/PageShell';
 import glass from '../components/glass/Glass.module.css';
 import GlassPillRow from '../components/glass/GlassPillRow';
+import glassPill from '../components/glass/GlassPill.module.css';
 import pillStyles from './About.module.css';
 import { profile, intro, pillars, story, highlights } from '../content/about';
 import { TECH_ICONS } from '../content/techIcons';
@@ -123,12 +124,12 @@ export default function About() {
                 style={{ marginTop: 20 }}
                 className={pillStyles.introPills}
                 items={[
-                  { key: 'linkedin', content: 'LinkedIn', href: profile.linkedin, className: pillStyles.pillLink },
+                  { key: 'linkedin', content: 'LinkedIn', href: profile.linkedin, className: glassPill.pillLink },
                   {
                     key: 'email',
                     content: 'Email',
                     href: `mailto:${profile.email}`,
-                    className: pillStyles.pillLink,
+                    className: glassPill.pillLink,
                   },
                 ]}
               />

@@ -1,34 +1,3 @@
-/* Interactive variant of GlassPill.module.css's shared `.pill` class (see
-   GlassPillRow), for pills that are actual links — composed alongside it
-   rather than replacing it, so the base glass background/border still
-   apply and only the interactive states below need to live here. Both
-   current uses (LinkedIn, mailto Email) leave the site, so this uses the
-   secondary/indigo accent — see tokens.css: blue stays reserved for
-   in-site navigation and focus. */
-.pillLink {
-  transition: color 200ms ease, border-color 200ms ease, transform 150ms ease;
-}
-
-.pillLink:hover {
-  /* --color-accent-secondary-onglass, not the plain --color-accent-secondary
-     other pill-hover/focus states on this page use elsewhere — this pill has
-     no solid CSS backing of its own (see GlassPill.module.css), just the
-     naked WebGL panel, so its text needs the same on-glass light variant
-     --color-heading/--color-label etc. use, not the mid-tone one tuned for
-     a solid background. */
-  color: var(--color-accent-secondary-onglass);
-  border-color: var(--color-accent-secondary-onglass);
-}
-
-.pillLink:active {
-  transform: scale(0.96);
-}
-
-.pillLink:focus-visible {
-  outline: 2px solid var(--color-accent-secondary-onglass);
-  outline-offset: 2px;
-}
-
 /* Intro section's photo + name/title/text row. */
 .introRow {
   display: flex;
