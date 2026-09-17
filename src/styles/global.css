@@ -5,16 +5,24 @@
 }
 
 html {
-  /* Reserves the scrollbar's gutter on every page, whether or not that
-     page actually scrolls — without this, Home (exactly 100vh, never
-     scrolls) has a few pixels more usable viewport width than About/
-     Projects (content taller than one screen, so the browser shows a real
-     scrollbar). NavPill is `position: fixed; left: 50%;
-     transform: translateX(-50%)`, so it centers against that viewport
-     width — a scrollbar appearing/disappearing between pages shifted its
-     centerpoint left by half the scrollbar's width, which is why it sat in
-     a visibly different spot on About than on Home. */
-  scrollbar-gutter: stable;
+  /* Scrollbar hidden everywhere below (native scrollbar's visual track
+     read as a stray white line on Home, since it draws over the page
+     regardless of what any CSS background paints underneath it) — with no
+     scrollbar ever rendered, there's no width for `scrollbar-gutter:
+     stable` (previously here) to reserve either: NavPill's
+     `position: fixed; left: 50%; transform: translateX(-50%)` now centers
+     against the same full viewport width on every page, scrolling or not,
+     with nothing left to keep "stable" against. */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* legacy Edge/IE */
+}
+
+/* Chrome/Safari/Chromium-Edge equivalent of the two properties above —
+   still just hides the scrollbar's own painted track/thumb, not the
+   `overflow` that makes the page scrollable, so wheel/touch/keyboard
+   scrolling on About/Projects keeps working exactly as before. */
+html::-webkit-scrollbar {
+  display: none;
 }
 
 html,
