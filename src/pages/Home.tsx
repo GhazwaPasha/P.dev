@@ -14,15 +14,15 @@ export default function Home() {
   const cardRef = useRef<HTMLDivElement>(null);
 
   // LogoBadges centers itself horizontally under this card via the
-  // `--card-center-right` custom property it reads (distance from the
-  // viewport's right edge to the card's own horizontal center) — see the
-  // comment on `right` in LogoBadges.tsx. That distance stays constant
-  // across viewport widths (the card is anchored by a fixed `right: 64px`
-  // in IdentityCard.module.css, so widening the viewport shifts the card
-  // and this measurement together) but depends on the card's rendered
-  // width, which comes from its own font metrics rather than anything
-  // worth hand-computing — so it's measured directly and republished
-  // whenever the card's box actually changes size (e.g. on font load).
+  // `--card-center-right` custom property, and drops itself vertically
+  // below the card via `--card-half-height` — both read by LogoBadges.tsx
+  // (see the comments on `left`/`top` there). Neither stays a hand-computed
+  // constant: the card's rendered width/height come from its own font
+  // metrics and content (the latter now variable — the LinkedIn/Email pill
+  // row below can wrap), not anything worth recomputing by hand every time
+  // the card's content changes — so both are measured directly off the
+  // card's own box and republished whenever it actually changes size (e.g.
+  // on font load, or content changes).
   useLayoutEffect(() => {
     const section = sectionRef.current;
     const card = cardRef.current;
@@ -31,6 +31,7 @@ export default function Home() {
     const update = () => {
       const rect = card.getBoundingClientRect();
       section.style.setProperty('--card-center-right', `${window.innerWidth - rect.left - rect.width / 2}px`);
+      section.style.setProperty('--card-half-height', `${rect.height / 2}px`);
     };
     update();
 

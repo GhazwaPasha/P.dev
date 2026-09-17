@@ -44,17 +44,18 @@ function arcOffset(i: number, n: number) {
 
 // The identity card (Home.tsx) is vertically centered via `top: 50%;
 // transform: translateY(-50%)`, so its own top/bottom edges sit half its
-// rendered height above/below the section's 50% line. CARD_HALF_HEIGHT is
-// that half-height, worked out from the card's own styles: 40px top padding
-// + the h1 (34px * 1.15 line-height) + 8px paragraph margin + the p (18px *
-// 1.45 line-height) + 40px bottom padding, halved. CARD_GAP is the visual
-// breathing room below the card's bottom edge before the badges start.
-// FALLBACK_CARD_RIGHT is only the pre-measurement guess used below before
-// Home.tsx's ResizeObserver publishes the real `--card-center-right` custom
-// property (see the comment on `left` below, and the one on that effect in
-// Home.tsx) — it's never relied on for the actual layout, just avoids a
-// coordinate of `NaN` on the very first paint.
-const CARD_HALF_HEIGHT = 77;
+// rendered height above/below the section's 50% line. That half-height used
+// to be a hand-computed constant, but the card's content isn't fixed
+// anymore (the LinkedIn/Email pill row can wrap to two lines on a narrow
+// card), so it's measured directly off the card's real box instead — see
+// `--card-half-height`, published by the ResizeObserver in Home.tsx.
+// CARD_GAP is the visual breathing room below the card's bottom edge before
+// the badges start. FALLBACK_CARD_HALF_HEIGHT/FALLBACK_CARD_RIGHT are only
+// the pre-measurement guesses used below before Home.tsx's ResizeObserver
+// publishes the real custom properties (see the comments on `top`/`left`
+// below, and the one on that effect in Home.tsx) — never relied on for the
+// actual layout, just avoids a coordinate of `NaN` on the very first paint.
+const FALLBACK_CARD_HALF_HEIGHT = 77;
 const CARD_GAP = 28;
 const FALLBACK_CARD_RIGHT = 64;
 // Deliberate nudge off dead-center, to the right, purely by eye.
@@ -79,7 +80,7 @@ export default function LogoBadges() {
     <div
       className={styles.wrap}
       style={{
-        top: `calc(50% + ${CARD_HALF_HEIGHT + CARD_GAP}px)`,
+        top: `calc(50% + var(--card-half-height, ${FALLBACK_CARD_HALF_HEIGHT}px) + ${CARD_GAP}px)`,
         // Centers this row's own horizontal center under
         // `--card-center-right` — the identity card's real measured
         // horizontal center, published by a ResizeObserver in Home.tsx (see
